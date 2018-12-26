@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1251"><meta name="viewport" content="width=device-width"><title>file:///C:/Users/%D0%9C%D0%B0%D0%BA%D1%81%D0%B8%D0%BC/Desktop/MD_DA-master/HW2/HW2.html</title><link rel="stylesheet" type="text/css" href="resource://content-accessible/viewsource.css"></head><body id="viewsource" class="highlight" style="-moz-tab-size: 4" contextmenu="actions"><pre id="line1"><span># Домашнее задание №2, Козарев М.Ю. РИ-450005
+<span id="line2"></span>
+<span id="line3"></span>## Основы исследовательского анализа данных.
+<span id="line4"></span>
+<span id="line5"></span>## Исходные данные
+<span id="line6"></span>
+<span id="line7"></span>По адресу https://raw.githubusercontent.com/SergeyMirvoda/da2016/master/data/calif_penn_2011.csv можно получить набор данных, содержащий информацию о домовладениях в Калифорнии и Пенсильвании за 2011г. Информация сгруппированна по зонам переписи (Census tracts).
+<span id="line8"></span>
+<span id="line9"></span>## Загрузка и очистка данных
+<span id="line10"></span>
+<span id="line11"></span>1. Загрузите данные в датафрейм, который назовите data.
+<span id="line12"></span>
+<span id="line13"></span>```
+<span id="line14"></span>&gt; data </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> data.frame(read.csv("https://raw.githubusercontent.com/SergeyMirvoda/da2016/master/data/calif_penn_2011.csv"))
+<span id="line15"></span>```
+<span id="line16"></span>
+<span id="line17"></span>2. Сколько строк и столбцов в data?
+<span id="line18"></span>
+<span id="line19"></span>```
+<span id="line20"></span>&gt; nrow(data)
+<span id="line21"></span>[1] 11275
+<span id="line22"></span>&gt; ncol(data)
+<span id="line23"></span>[1] 34
+<span id="line24"></span>```
+<span id="line25"></span>
+<span id="line26"></span>3. Выполните следующую команду и объясните, что она делает. colSums(apply(data,c(1,2), is.na))
+<span id="line27"></span>
+<span id="line28"></span>```
+<span id="line29"></span>&gt; colSums(apply(data,c(1,2), is.na))
+<span id="line30"></span>                          X                     GEO.id2 
+<span id="line31"></span>                          0                           0 
+<span id="line32"></span>                    STATEFP                    COUNTYFP 
+<span id="line33"></span>                          0                           0 
+<span id="line34"></span>                    TRACTCE                  POPULATION 
+<span id="line35"></span>                          0                           0 
+<span id="line36"></span>                   LATITUDE                   LONGITUDE 
+<span id="line37"></span>                          0                           0 
+<span id="line38"></span>          GEO.display.label          Median_house_value 
+<span id="line39"></span>                          0                         599 
+<span id="line40"></span>                Total_units                Vacant_units 
+<span id="line41"></span>                          0                           0 
+<span id="line42"></span>               Median_rooms  Mean_household_size_owners 
+<span id="line43"></span>                        157                         215 
+<span id="line44"></span>Mean_household_size_renters         Built_2005_or_later 
+<span id="line45"></span>                        152                          98 
+<span id="line46"></span>         Built_2000_to_2004                 Built_1990s 
+<span id="line47"></span>                         98                          98 
+<span id="line48"></span>                Built_1980s                 Built_1970s 
+<span id="line49"></span>                         98                          98 
+<span id="line50"></span>                Built_1960s                 Built_1950s 
+<span id="line51"></span>                         98                          98 
+<span id="line52"></span>                Built_1940s       Built_1939_or_earlier 
+<span id="line53"></span>                         98                          98 
+<span id="line54"></span>                 Bedrooms_0                  Bedrooms_1 
+<span id="line55"></span>                         98                          98 
+<span id="line56"></span>                 Bedrooms_2                  Bedrooms_3 
+<span id="line57"></span>                         98                          98 
+<span id="line58"></span>                 Bedrooms_4          Bedrooms_5_or_more 
+<span id="line59"></span>                         98                          98 
+<span id="line60"></span>                     Owners                     Renters 
+<span id="line61"></span>                        100                         100 
+<span id="line62"></span>    Median_household_income       Mean_household_income 
+<span id="line63"></span>                        115                         126 
+<span id="line64"></span>```
+<span id="line65"></span>
+<span id="line66"></span>4. Функция na.omit() принимает датафрейм и возвращает новый датафрейм, игнорируя строки, содержащие значение NA. Используйте эту функцию для удаления строк с неполными данными.
+<span id="line67"></span>5. Сколько строк было удалено?
+<span id="line68"></span>
+<span id="line69"></span>```
+<span id="line70"></span>&gt; dataFixed </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> na.omit(data)
+<span id="line71"></span>&gt; nrow(data)-nrow(dataFixed)
+<span id="line72"></span>[1] 670
+<span id="line73"></span>```
+<span id="line74"></span>
+<span id="line75"></span>### Было удалено 670 строк
+<span id="line76"></span>
+<span id="line77"></span>6. Соответствует ли результат выполнения, значениям из пункта 3?
+<span id="line78"></span>
+<span id="line79"></span>```
+<span id="line80"></span>&gt; colSums(apply(dataFixed,c(1,2), is.na))
+<span id="line81"></span>                          X                     GEO.id2 
+<span id="line82"></span>                          0                           0 
+<span id="line83"></span>                    STATEFP                    COUNTYFP 
+<span id="line84"></span>                          0                           0 
+<span id="line85"></span>                    TRACTCE                  POPULATION 
+<span id="line86"></span>                          0                           0 
+<span id="line87"></span>                   LATITUDE                   LONGITUDE 
+<span id="line88"></span>                          0                           0 
+<span id="line89"></span>          GEO.display.label          Median_house_value 
+<span id="line90"></span>                          0                           0 
+<span id="line91"></span>                Total_units                Vacant_units 
+<span id="line92"></span>                          0                           0 
+<span id="line93"></span>               Median_rooms  Mean_household_size_owners 
+<span id="line94"></span>                          0                           0 
+<span id="line95"></span>Mean_household_size_renters         Built_2005_or_later 
+<span id="line96"></span>                          0                           0 
+<span id="line97"></span>         Built_2000_to_2004                 Built_1990s 
+<span id="line98"></span>                          0                           0 
+<span id="line99"></span>                Built_1980s                 Built_1970s 
+<span id="line100"></span>                          0                           0 
+<span id="line101"></span>                Built_1960s                 Built_1950s 
+<span id="line102"></span>                          0                           0 
+<span id="line103"></span>                Built_1940s       Built_1939_or_earlier 
+<span id="line104"></span>                          0                           0 
+<span id="line105"></span>                 Bedrooms_0                  Bedrooms_1 
+<span id="line106"></span>                          0                           0 
+<span id="line107"></span>                 Bedrooms_2                  Bedrooms_3 
+<span id="line108"></span>                          0                           0 
+<span id="line109"></span>                 Bedrooms_4          Bedrooms_5_or_more 
+<span id="line110"></span>                          0                           0 
+<span id="line111"></span>                     Owners                     Renters 
+<span id="line112"></span>                          0                           0 
+<span id="line113"></span>    Median_household_income       Mean_household_income 
+<span id="line114"></span>                          0                           0 
+<span id="line115"></span>```
+<span id="line116"></span>
+<span id="line117"></span>### Нет, т.к. Na элементы были удалены.
+<span id="line118"></span>
+<span id="line119"></span>## Новые дома
+<span id="line120"></span>
+<span id="line121"></span>1. Переменная(колонка) Built_2005_or_later содержит данные о проценте домов, построенных с 2005 года. Постройте диаграмму рассеяния (scatterplot) медианы стоимости домов (переменная Median_house_value) относительно процента новых домов.
+<span id="line122"></span>
+<span id="line123"></span>```
+<span id="line124"></span>&gt; scatter.smooth(data$Built_2005_or_later, data$Median_house_value)
+<span id="line125"></span>```
+<span id="line126"></span>
+<span id="line127"></span>2. Постройте ещё два графика для каждого из штатов отдельно. Номер штата содержится в переменной (STATEFP), где Калифорния 6-й штат, а Пенсильвания 42.
+<span id="line128"></span>
+<span id="line129"></span>```
+<span id="line130"></span>&gt; scatter.smooth(data$Built_2005_or_later[data$STATEFP==6], data$Median_house_value[data$STATEFP==6])
+<span id="line131"></span>&gt; scatter.smooth(data$Built_2005_or_later[data$STATEFP==42], data$Median_house_value[data$STATEFP==42])
+<span id="line132"></span>```
+<span id="line133"></span>
+<span id="line134"></span>## Незанятые дома
+<span id="line135"></span>
+<span id="line136"></span>Уровень найма (vacancy rate) — доля домов, которые не были заняты. В данных содержатся колонки, содержащие общее количество домовладений и количество не занятых домовладений.
+<span id="line137"></span>
+<span id="line138"></span>1. В датафрейм data добавьте новую колонку vacancy_rate, которая должна содержать вышеописанный показатель.
+<span id="line139"></span>
+<span id="line140"></span>```
+<span id="line141"></span>&gt; data$vacancy_rate </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> data$Vacant_units / data$Total_units
+<span id="line142"></span>```
+<span id="line143"></span>
+<span id="line144"></span>2. Найдите минимум, максимум, среднее и медиану полученных значений показателя.
+<span id="line145"></span>
+<span id="line146"></span>```
+<span id="line147"></span>&gt; vacancyRate </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> na.omit(data$vacancy_rate)
+<span id="line148"></span>&gt; min(vacancyRate)
+<span id="line149"></span>[1] 0
+<span id="line150"></span>&gt; max(vacancyRate)
+<span id="line151"></span>[1] 1
+<span id="line152"></span>&gt; median(vacancyRate)
+<span id="line153"></span>[1] 0.06766326
+<span id="line154"></span>&gt; mean(vacancyRate)
+<span id="line155"></span>[1] 0.08917878
+<span id="line156"></span>```
+<span id="line157"></span>
+<span id="line158"></span>3. Постройте диаграмму уровня найма относительно медианы стоимости домов. Что можно заметить?
+<span id="line159"></span>
+<span id="line160"></span>```
+<span id="line161"></span>&gt; plot(data$Median_house_value, data$vacancy_rate)
+<span id="line162"></span>```
+<span id="line163"></span>
+<span id="line164"></span>### Больший найм у более дешевых домов.
+<span id="line165"></span>
+<span id="line166"></span># Корреляция 
+<span id="line167"></span>
+<span id="line168"></span>Колонка COUNTYFP содержит числовой код округа внутри штата. Нас интересуют Butte County (округ 7 в Калифорнии), Santa Clara (округ 85 в Калифорнии) и York County (округ 133 в Пенсильвании).
+<span id="line169"></span>
+<span id="line170"></span>1. Объясните, что делает приведённый в конце задания код и как именно он это делает.
+<span id="line171"></span>
+<span id="line172"></span>```
+<span id="line173"></span>&gt; acc </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> c()
+<span id="line174"></span>&gt; for (tract in 1:nrow(data)) {
+<span id="line175"></span>+     if (data$STATEFP[tract] == 6) {
+<span id="line176"></span>+         if (data$COUNTYFP[tract] == 1) {
+<span id="line177"></span>+             acc </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> c(acc, tract)
+<span id="line178"></span>+         }
+<span id="line179"></span>+     }
+<span id="line180"></span>+ }
+<span id="line181"></span>&gt; accmv </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> c()
+<span id="line182"></span>&gt; for (tract in acc) {
+<span id="line183"></span>+     accmv </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> c(accmv, data[tract,10])
+<span id="line184"></span>+ }
+<span id="line185"></span>&gt; median(accmv)
+<span id="line186"></span>[1] 474050
+<span id="line187"></span>```
+<span id="line188"></span>
+<span id="line189"></span>### Добавляем в переменную acc номера строк с номером штата 6 и номером округа 1. Затем в переменную accmv записываем значение колонки Median_house_value по строчкам acc и в конце считаем медиану accmv
+<span id="line190"></span>
+<span id="line191"></span>2. Напишите другим способом в одну строку, то же самое, что делает нижеуказанный код. Способов получить тот же ответ множество, достаточно одного.
+<span id="line192"></span>
+<span id="line193"></span>```
+<span id="line194"></span>&gt; median(data$Median_house_value[data$STATEFP==6][data$COUNTYFP==1], na.rm=TRUE)
+<span id="line195"></span>[1] 474050
+<span id="line196"></span>```
+<span id="line197"></span>
+<span id="line198"></span>3. Найдите средний процент построенных домовладений в округах (Butte County, Santa Clara, York County)
+<span id="line199"></span>
+<span id="line200"></span>```
+<span id="line201"></span>&gt; perButte </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> mean(data$Total_units[data$STATEFP==6<span><span class="error" title="«&amp;» не начинает ссылку на символ. («&amp;» вероятно должен быть экранирован как «&amp;amp;»).">&amp;</span>da</span>ta$COUNTYFP==7]/sum(data$Total_units[data$STATEFP==6]))
+<span id="line202"></span>&gt; perButte
+<span id="line203"></span>[1] 0.0001458294
+<span id="line204"></span>&gt; perSanta </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> mean(data$Total_units[data$STATEFP==6<span><span class="error" title="«&amp;» не начинает ссылку на символ. («&amp;» вероятно должен быть экранирован как «&amp;amp;»).">&amp;</span>da</span>ta$COUNTYFP==85]/sum(data$Total_units[data$STATEFP==6]))
+<span id="line205"></span>&gt; perSanta
+<span id="line206"></span>[1] 0.0001320997
+<span id="line207"></span>&gt; perYork </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> mean(data$Total_units[data$STATEFP==42<span><span class="error" title="«&amp;» не начинает ссылку на символ. («&amp;» вероятно должен быть экранирован как «&amp;amp;»).">&amp;</span>da</span>ta$COUNTYFP==133]/sum(data$Total_units[data$STATEFP==42]))
+<span id="line208"></span>&gt; perYork
+<span id="line209"></span>[1] 0.000360114
+<span id="line210"></span>```
+<span id="line211"></span>
+<span id="line212"></span>4. Функция cor рассчитывает коэффициент корреляции между двумя переменными. Рассчитайте корреляцию между медианы стоимости домовладений (Median_house_value) и процентом построенных домов (Built_2005_or_later):
+<span id="line213"></span>
+<span id="line214"></span>i. для всего набора данных
+<span id="line215"></span>
+<span id="line216"></span>```
+<span id="line217"></span>&gt; cor(as.numeric(data$Built_2005_or_later), data$Median_house_value)
+<span id="line218"></span>[1] -0.01893186
+<span id="line219"></span>```
+<span id="line220"></span>
+<span id="line221"></span>ii. для Калифорнии
+<span id="line222"></span>
+<span id="line223"></span>```
+<span id="line224"></span>&gt; cor(as.numeric(data$Built_2005_or_later[data$STATEFP==6]), data$Median_house_value[data$STATEFP==6])
+<span id="line225"></span>[1] -0.1153604
+<span id="line226"></span>```
+<span id="line227"></span>
+<span id="line228"></span>iii. для Пенсильвании
+<span id="line229"></span>
+<span id="line230"></span>```
+<span id="line231"></span>&gt; cor(as.numeric(data$Built_2005_or_later[data$STATEFP==42]), data$Median_house_value[data$STATEFP==42])
+<span id="line232"></span>[1] 0.2681654
+<span id="line233"></span>```
+<span id="line234"></span>iv. для округа Butte County
+<span id="line235"></span>
+<span id="line236"></span>```
+<span id="line237"></span>&gt; cor(as.numeric(data$Built_2005_or_later[data$STATEFP==6<span><span class="error" title="«&amp;» не начинает ссылку на символ. («&amp;» вероятно должен быть экранирован как «&amp;amp;»).">&amp;</span>da</span>ta$COUNTYFP==7]), data$Median_house_value[data$STATEFP==6<span><span class="error" title="«&amp;» не начинает ссылку на символ. («&amp;» вероятно должен быть экранирован как «&amp;amp;»).">&amp;</span>da</span>ta$COUNTYFP==7])
+<span id="line238"></span>[1] 0.04203267
+<span id="line239"></span>```
+<span id="line240"></span>
+<span id="line241"></span>v. для округа Santa Clara
+<span id="line242"></span>
+<span id="line243"></span>```
+<span id="line244"></span>&gt; cor(as.numeric(data$Built_2005_or_later[data$STATEFP==6<span><span class="error" title="«&amp;» не начинает ссылку на символ. («&amp;» вероятно должен быть экранирован как «&amp;amp;»).">&amp;</span>da</span>ta$COUNTYFP==85]), data$Median_house_value[data$STATEFP==6<span><span class="error" title="«&amp;» не начинает ссылку на символ. («&amp;» вероятно должен быть экранирован как «&amp;amp;»).">&amp;</span>da</span>ta$COUNTYFP==85])
+<span id="line245"></span>[1] -0.1726203
+<span id="line246"></span>```
+<span id="line247"></span>
+<span id="line248"></span>v. для округа York County
+<span id="line249"></span>
+<span id="line250"></span>```
+<span id="line251"></span>&gt; cor(as.numeric(data$Built_2005_or_later[data$STATEFP==42<span><span class="error" title="«&amp;» не начинает ссылку на символ. («&amp;» вероятно должен быть экранирован как «&amp;amp;»).">&amp;</span>da</span>ta$COUNTYFP==133]), data$Median_house_value[data$STATEFP==42<span><span class="error" title="«&amp;» не начинает ссылку на символ. («&amp;» вероятно должен быть экранирован как «&amp;amp;»).">&amp;</span>da</span>ta$COUNTYFP==133])
+<span id="line252"></span>[1] 0.3860773
+<span id="line253"></span>```
+<span id="line254"></span>
+<span id="line255"></span>5. Постройте три диаграммы медианы стоимости домовладений (Median_house_value) относительно медианы дохода (Median_household_income) для трёх округов. Допустимо указать все три на одном графике.
+<span id="line256"></span>
+<span id="line257"></span>```
+<span id="line258"></span>&gt; plot(data$Median_house_value[data$STATEFP==6<span><span class="error" title="«&amp;» не начинает ссылку на символ. («&amp;» вероятно должен быть экранирован как «&amp;amp;»).">&amp;</span>da</span>ta$COUNTYFP==7], data$Median_household_income[data$STATEFP==6<span><span class="error" title="«&amp;» не начинает ссылку на символ. («&amp;» вероятно должен быть экранирован как «&amp;amp;»).">&amp;</span>da</span>ta$COUNTYFP==7])
+<span id="line259"></span>&gt; plot(data$Median_house_value[data$STATEFP==6<span><span class="error" title="«&amp;» не начинает ссылку на символ. («&amp;» вероятно должен быть экранирован как «&amp;amp;»).">&amp;</span>da</span>ta$COUNTYFP==85], data$Median_household_income[data$STATEFP==6<span><span class="error" title="«&amp;» не начинает ссылку на символ. («&amp;» вероятно должен быть экранирован как «&amp;amp;»).">&amp;</span>da</span>ta$COUNTYFP==85])
+<span id="line260"></span>&gt; plot(data$Median_house_value[data$STATEFP==42<span><span class="error" title="«&amp;» не начинает ссылку на символ. («&amp;» вероятно должен быть экранирован как «&amp;amp;»).">&amp;</span>da</span>ta$COUNTYFP==133], data$Median_household_income[data$STATEFP==42<span><span class="error" title="«&amp;» не начинает ссылку на символ. («&amp;» вероятно должен быть экранирован как «&amp;amp;»).">&amp;</span>da</span>ta$COUNTYFP==133])
+<span id="line261"></span>```</span></pre><menu type="context" id="actions"><menuitem id="goToLine" label="Перейти к строке…" accesskey="е"></menuitem><menuitem id="wrapLongLines" label="Переносить длинные строки" type="checkbox"></menuitem><menuitem id="highlightSyntax" label="Подсветка синтаксиса" type="checkbox" checked="true"></menuitem></menu></body></html>
