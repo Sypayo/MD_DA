@@ -1,0 +1,381 @@
+#  озарев ћ.ё. –»-450005
+
+#ѕользу€сь примером из лекции файл (5.0.R) проанализируйте данные
+#о возрасте и физ. характеристиках молюсков
+#https://archive.ics.uci.edu/ml/datasets/abalone
+
+```
+data <- read.csv("https://archive.ics.uci.edu/ml/machine-learning-databases/abalone/abalone.data", header=TRUE, sep=",")
+> summary(data)
+ M            X0.455          X0.365      
+ F:1307   Min.   :0.075   Min.   :0.0550  
+ I:1342   1st Qu.:0.450   1st Qu.:0.3500  
+ M:1527   Median :0.545   Median :0.4250  
+          Mean   :0.524   Mean   :0.4079  
+          3rd Qu.:0.615   3rd Qu.:0.4800  
+          Max.   :0.815   Max.   :0.6500  
+     X0.095           X0.514          X0.2245      
+ Min.   :0.0000   Min.   :0.0020   Min.   :0.0010  
+ 1st Qu.:0.1150   1st Qu.:0.4415   1st Qu.:0.1860  
+ Median :0.1400   Median :0.7997   Median :0.3360  
+ Mean   :0.1395   Mean   :0.8288   Mean   :0.3594  
+ 3rd Qu.:0.1650   3rd Qu.:1.1533   3rd Qu.:0.5020  
+ Max.   :1.1300   Max.   :2.8255   Max.   :1.4880  
+     X0.101            X0.15             X15        
+ Min.   :0.00050   Min.   :0.0015   Min.   : 1.000  
+ 1st Qu.:0.09337   1st Qu.:0.1300   1st Qu.: 8.000  
+ Median :0.17100   Median :0.2340   Median : 9.000  
+ Mean   :0.18061   Mean   :0.2389   Mean   : 9.932  
+ 3rd Qu.:0.25300   3rd Qu.:0.3290   3rd Qu.:11.000  
+ Max.   :0.76000   Max.   :1.0050   Max.   :29.000  
+ > colnames(data)
+[1] "M"       "X0.455"  "X0.365"  "X0.095"  "X0.514" 
+[6] "X0.2245" "X0.101"  "X0.15"   "X15" 
+> colnames(data) <- c("sex", "length", "diameter", "height", 
++                     "whole_weight", "shucked_weight",
++                     "viscera_weight", "shell_weight", "rings")
+> colnames(data)
+[1] "sex"            "length"         "diameter"      
+[4] "height"         "whole_weight"   "shucked_weight"
+[7] "viscera_weight" "shell_weight"   "rings" 
+> data$sex <- factor(c("Female", "Infant", "Male")[data$sex])
+> 
+> par(mfrow=c(1,3)) 
+> 
+> hist(data$diameter, main = "ƒиаметр, мм")
+Error in plot.new() : figure margins too large
+> 
+> hist(data$diameter, main = "ƒиаметр, мм")
+> 
+> hist(data$height, main = "¬ысота, мм")
+> 
+> hist(data$whole_weight, main = "ѕолный вес, гр")
+```
+
+#¬идим ассиметрию https://en.wikipedia.org/wiki/Skewness
+#и выбросы (от них нужно избавитьс€)
+
+#¬изулизируем возможные зависимости
+
+```
+> par(mfrow=c(1,2)) 
+> 
+> plot(data$diameter, data$whole_weight,'p',main = "«ависимость веса от диаметра")
+> 
+> plot(data$height, data$whole_weight,'p',main = "«ависимость веса от высоты")
+```
+
+#’орошо видна зависимость, нужно еЄ исследовать
+#построить линейные модели при помощи функции lm, посмотреть их характеристики
+
+```
+> lin_model1 <- lm(data$diameter ~ data$whole_weight)
+> summary(lin_model1)
+Call:
+lm(formula = data$diameter ~ data$whole_weight)
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-0.198038 -0.015281  0.008041  0.024858  0.114478 
+Coefficients:
+                  Estimate Std. Error t value Pr(>|t|)
+(Intercept)       0.252664   0.001143   221.1   <2e-16
+data$whole_weight 0.187288   0.001187   157.8   <2e-16
+                     
+(Intercept)       ***
+data$whole_weight ***
+---
+Signif. codes:  
+0 С***Т 0.001 С**Т 0.01 С*Т 0.05 С.Т 0.1 С Т 1
+Residual standard error: 0.03761 on 4174 degrees of freedom
+Multiple R-squared:  0.8565,	Adjusted R-squared:  0.8564 
+F-statistic: 2.491e+04 on 1 and 4174 DF,  p-value: < 2.2e-16
+> plot(lin.Model1)
+> lin.Model2 <- lm(data$height ~ data$whole_weight)
+> summary(lin.Model2)
+Call:
+lm(formula = data$height ~ data$whole_weight)
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.14742 -0.01031 -0.00035  0.00993  1.00688 
+Coefficients:
+                   Estimate Std. Error t value Pr(>|t|)    
+(Intercept)       0.0816199  0.0007291  111.95   <2e-16 ***
+data$whole_weight 0.0698672  0.0007571   92.29   <2e-16 ***
+---
+Signif. codes:  0 С***Т 0.001 С**Т 0.01 С*Т 0.05 С.Т 0.1 С Т 1
+Residual standard error: 0.02399 on 4174 degrees of freedom
+Multiple R-squared:  0.6711,	Adjusted R-squared:  0.671 
+F-statistic:  8517 on 1 and 4174 DF,  p-value: < 2.2e-16
+> plot(lin.Model2)
+> lin.Model3 <- lm(data$whole_weight ~ .,data=data)
+> summary(lin.Model3)
+Call:
+lm(formula = data$whole_weight ~ ., data = data)
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.54657 -0.01739 -0.00194  0.01175  0.51820 
+Coefficients:
+                 Estimate Std. Error t value Pr(>|t|)    
+(Intercept)    -0.0275208  0.0062309  -4.417 1.03e-05 ***
+sexInfant      -0.0018702  0.0021643  -0.864    0.388    
+sexMale        -0.0009144  0.0017485  -0.523    0.601    
+length         -0.0253368  0.0379483  -0.668    0.504    
+diameter        0.0160386  0.0468599   0.342    0.732    
+height         -0.0072700  0.0324204  -0.224    0.823    
+shucked_weight  0.9785924  0.0102694  95.292  < 2e-16 ***
+viscera_weight  1.0981406  0.0214198  51.268  < 2e-16 ***
+shell_weight    1.1543675  0.0156471  73.775  < 2e-16 ***
+rings           0.0039522  0.0003194  12.374  < 2e-16 ***
+---
+Signif. codes:  0 С***Т 0.001 С**Т 0.01 С*Т 0.05 С.Т 0.1 С Т 1
+Residual standard error: 0.04602 on 4166 degrees of freedom
+Multiple R-squared:  0.9912,	Adjusted R-squared:  0.9912 
+F-statistic: 5.221e+04 on 9 and 4166 DF,  p-value: < 2.2e-16
+> plot(lin.Model3)
+```
+### ”берем выбросы
+
+```
+> data<-data[data$height<=0.18&data$height>0.08,]
+> hist(data$height)
+> 
+> data<-data[data$diameter<=0.52&data$diameter>0.26,]
+> 
+> hist(data$diameter)
+> 
+> data<-data[data$whole_weight<=1.4&data$whole_weight>0.2,]
+> 
+> hist(data$whole_weight)
+```
+
+### ѕроверим модели еще раз
+
+```
+> lin.Model1 <- lm(data$diameter ~ data$whole_weight)
+> summary(lin.Model1)
+Call:
+lm(formula = data$diameter ~ data$whole_weight)
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-0.128109 -0.013161  0.000879  0.014429  0.101601 
+Coefficients:
+                  Estimate Std. Error t value Pr(>|t|)    
+(Intercept)       0.262660   0.001046   251.1   <2e-16 ***
+data$whole_weight 0.192801   0.001279   150.8   <2e-16 ***
+---
+Signif. codes:  0 С***Т 0.001 С**Т 0.01 С*Т 0.05 С.Т 0.1 С Т 1
+Residual standard error: 0.02185 on 2972 degrees of freedom
+Multiple R-squared:  0.8844,	Adjusted R-squared:  0.8843 
+F-statistic: 2.273e+04 on 1 and 2972 DF,  p-value: < 2.2e-16
+> plot(lin.Model1)
+Hit <Return> to see next plot: 
+Hit <Return> to see next plot: 
+Hit <Return> to see next plot: 
+Hit <Return> to see next plot: 
+> lin.Model2 <-lm(data$height ~ data$whole_weight)
+> summary(lin.Model2)
+Call:
+lm(formula = data$height ~ data$whole_weight)
+Residuals:
+      Min        1Q    Median 
+-0.066346 -0.008823 -0.000632 
+       3Q       Max 
+ 0.007976  0.063340 
+Coefficients:
+                   Estimate
+(Intercept)       0.0879212
+data$whole_weight 0.0651667
+                  Std. Error
+(Intercept)        0.0006326
+data$whole_weight  0.0007735
+                  t value
+(Intercept)        138.98
+data$whole_weight   84.25
+                  Pr(>|t|)    
+(Intercept)         <2e-16 ***
+data$whole_weight   <2e-16 ***
+---
+Signif. codes:  
+  0 С***Т 0.001 С**Т 0.01 С*Т
+  0.05 С.Т 0.1 С Т 1
+Residual standard error: 0.01321 on 2972 degrees of freedom
+Multiple R-squared:  0.7048,	Adjusted R-squared:  0.7047 
+F-statistic:  7097 on 1 and 2972 DF,  p-value: < 2.2e-16
+> plot(lin.Model2)
+Hit <Return> to see next plot: 
+Hit <Return> to see next plot: 
+Hit <Return> to see next plot: 
+Hit <Return> to see next plot: 
+> lin.Model3 <- lm(data$whole_weight ~ .,data=data)
+> summary(lin.Model3)
+Call:
+lm(formula = data$whole_weight ~ ., data = data)
+Residuals:
+     Min       1Q   Median 
+-0.33756 -0.01458 -0.00249 
+      3Q      Max 
+ 0.00992  0.28866 
+Coefficients:
+                 Estimate
+(Intercept)    -0.0569746
+sexInfant      -0.0059464
+sexMale        -0.0004383
+length          0.0432648
+diameter        0.0610791
+height          0.0750174
+shucked_weight  0.9795758
+viscera_weight  0.9859411
+shell_weight    1.0909452
+rings           0.0033059
+               Std. Error
+(Intercept)     0.0090711
+sexInfant       0.0016696
+sexMale         0.0014199
+length          0.0328528
+diameter        0.0404433
+height          0.0471937
+shucked_weight  0.0106797
+viscera_weight  0.0209855
+shell_weight    0.0185611
+rings           0.0002702
+               t value Pr(>|t|)
+(Intercept)     -6.281 3.86e-10
+sexInfant       -3.562 0.000374
+sexMale         -0.309 0.757551
+length           1.317 0.187964
+diameter         1.510 0.131088
+height           1.590 0.112040
+shucked_weight  91.723  < 2e-16
+viscera_weight  46.982  < 2e-16
+shell_weight    58.776  < 2e-16
+rings           12.234  < 2e-16
+                  
+(Intercept)    ***
+sexInfant      ***
+sexMale           
+length            
+diameter          
+height            
+shucked_weight ***
+viscera_weight ***
+shell_weight   ***
+rings          ***
+---
+Signif. codes:  
+  0 С***Т 0.001 С**Т 0.01 С*Т
+  0.05 С.Т 0.1 С Т 1
+Residual standard error: 0.0316 on 2964 degrees of freedom
+Multiple R-squared:  0.9899,	Adjusted R-squared:  0.9898 
+F-statistic: 3.215e+04 on 9 and 2964 DF,  p-value: < 2.2e-16
+> plot(lin.Model3)
+```
+
+### –азделить массив данных на 2 случайные части
+
+```
+> firstMass <- data[seq(1, nrow(data), by=2),]
+> secondMass <- data[-seq(1, nrow(data), by=2),]
+> summary(firstMass)
+     sex          length          diameter     
+ Female:465   Min.   :0.1850   Min.   :0.2650  
+ Infant:496   1st Qu.:0.4650   1st Qu.:0.3575  
+ Male  :526   Median :0.5300   Median :0.4150  
+              Mean   :0.5237   Mean   :0.4074  
+              3rd Qu.:0.5850   3rd Qu.:0.4600  
+              Max.   :0.7100   Max.   :0.5200  
+     height        whole_weight    shucked_weight  
+ Min.   :0.0850   Min.   :0.2010   Min.   :0.0660  
+ 1st Qu.:0.1200   1st Qu.:0.4870   1st Qu.:0.2057  
+ Median :0.1400   Median :0.7420   Median :0.3115  
+ Mean   :0.1367   Mean   :0.7513   Mean   :0.3269  
+ 3rd Qu.:0.1550   3rd Qu.:0.9948   3rd Qu.:0.4395  
+ Max.   :0.1800   Max.   :1.3900   Max.   :0.7335  
+ viscera_weight    shell_weight        rings       
+ Min.   :0.0260   Min.   :0.0550   Min.   : 5.000  
+ 1st Qu.:0.1045   1st Qu.:0.1435   1st Qu.: 8.000  
+ Median :0.1600   Median :0.2175   Median : 9.000  
+ Mean   :0.1641   Mean   :0.2179   Mean   : 9.861  
+ 3rd Qu.:0.2182   3rd Qu.:0.2873   3rd Qu.:11.000  
+ Max.   :0.4405   Max.   :0.5800   Max.   :27.000  
+> 
+> summary(secondMass)
+     sex          length          diameter     
+ Female:465   Min.   :0.3350   Min.   :0.2650  
+ Infant:469   1st Qu.:0.4700   1st Qu.:0.3600  
+ Male  :553   Median :0.5300   Median :0.4150  
+              Mean   :0.5263   Mean   :0.4092  
+              3rd Qu.:0.5900   3rd Qu.:0.4600  
+              Max.   :0.6850   Max.   :0.5200  
+     height        whole_weight    shucked_weight  
+ Min.   :0.0850   Min.   :0.2055   Min.   :0.0660  
+ 1st Qu.:0.1200   1st Qu.:0.4940   1st Qu.:0.2080  
+ Median :0.1400   Median :0.7640   Median :0.3195  
+ Mean   :0.1376   Mean   :0.7596   Mean   :0.3297  
+ 3rd Qu.:0.1550   3rd Qu.:1.0128   3rd Qu.:0.4385  
+ Max.   :0.1800   Max.   :1.3940   Max.   :0.7830  
+ viscera_weight    shell_weight        rings       
+ Min.   :0.0345   Min.   :0.0585   Min.   : 5.000  
+ 1st Qu.:0.1057   1st Qu.:0.1485   1st Qu.: 8.000  
+ Median :0.1615   Median :0.2200   Median : 9.000  
+ Mean   :0.1665   Mean   :0.2207   Mean   : 9.966  
+ 3rd Qu.:0.2205   3rd Qu.:0.2888   3rd Qu.:11.000  
+ Max.   :0.4365   Max.   :0.5200   Max.   :23.000  
+> lnFirstMass <- lm(firstMass$diameter ~ firstMass$whole_weight)
+> lnFirstMass
+Call:
+lm(formula = firstMass$diameter ~ firstMass$whole_weight)
+Coefficients:
+           (Intercept)  
+                0.2627  
+firstMass$whole_weight  
+                0.1926  
+> plot(lnFirstMass)
+Hit <Return> to see next plot: 
+Hit <Return> to see next plot: 
+Hit <Return> to see next plot: 
+Hit <Return> to see next plot: 
+> lnSecondMass <- lm(secondMass$diameter ~ secondMass$whole_weight)
+> plot(lnSecondMass)
+> lnFirstMass2 <- lm(firstMass$height ~ firstMass$whole_weight)
+> lnFirstMass3 <- lm(firstMass$whole_weight ~ .,data=firstMass)
+```
+
+### спрогнозировать (функци€ predict) значени€ во второй части
+
+### First prediction
+```
+> prediction1 <- predict(lnFirstMass)
+> cor(firstMass$whole_weight, prediction1)
+[1] 1
+> plot(firstMass$whole_weight, prediction1)
+> totPrediction1 <- predict(lnFirstMass, secondMass)
+> cor(secondMass$whole_weight, totPrediction1)
+[1] 0.7176496
+> plot(secondMass$whole_weight, totPrediction1)
+```
+
+### Second prediction
+
+```
+> prediction2 <- predict(lnFirstMass2)
+> cor(firstMass$whole_weight, prediction2)
+[1] 1
+> plot(firstMass$whole_weight, prediction2)
+> totPrediction2 <- predict(lnFirstMass2, secondMass)
+> cor(secondMass$whole_weight, totPrediction2)
+[1] 0.7176496
+> plot(secondMass$whole_weight, totPrediction2)
+```
+
+### Third prediction 
+
+```
+> prediction3 <- predict(lnFirstMass)
+> cor(firstMass$whole_weight, prediction3)
+[1] 1
+> plot(firstMass$whole_weight, prediction3)
+> totPrediction3 <- predict(lnFirstMass3, secondMass)
+> cor(secondMass$whole_weight, totPrediction3)
+[1] 0.9949722
+> plot(secondMass$whole_weight, totPrediction3)
+```
