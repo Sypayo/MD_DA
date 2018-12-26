@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1251"><meta name="viewport" content="width=device-width"><title>file:///C:/Users/%D0%9C%D0%B0%D0%BA%D1%81%D0%B8%D0%BC/Desktop/MD_DA-master/Lab%202/Lab2.html</title><link rel="stylesheet" type="text/css" href="resource://content-accessible/viewsource.css"></head><body id="viewsource" class="highlight" style="-moz-tab-size: 4" contextmenu="actions"><pre id="line1"><span>#Лабораторная работа №2
+<span id="line2"></span>
+<span id="line3"></span>##Козарев М.Ю. РИ-450005
+<span id="line4"></span>
+<span id="line5"></span>##Исходные данные
+<span id="line6"></span>
+<span id="line7"></span>Установленная среда R включает в себя набор заранее сконфигурированных массивов данных. В данной лабораторной требуется использовать одну из них — датафрейм из 93 машин-новинок 1993 года. Для того, чтобы загрузить данный датафрейм, необходимо выполнить следующие команды:
+<span id="line8"></span>
+<span id="line9"></span>```
+<span id="line10"></span>library(MASS)
+<span id="line11"></span>data(Cars93)
+<span id="line12"></span>```
+<span id="line13"></span>
+<span id="line14"></span>Для того, чтобы ознакомиться со структурой и составом данных, можно выполнить команду View(Cars93) или нажать на соответствующую кнопку в RStudio.
+<span id="line15"></span>
+<span id="line16"></span>##Задание 1
+<span id="line17"></span>
+<span id="line18"></span>1. Выполните команду summary() на полном наборе данных. Можно ли по результату выполнения сказать сколько строк в датафрейме? Если да, напишите сколько. Если нет, то приведите другой способ.
+<span id="line19"></span>
+<span id="line20"></span>```
+<span id="line21"></span>summary(Cars93)
+<span id="line22"></span> Manufacturer     Model         Type      Min.Price    
+<span id="line23"></span> Chevrolet: 8    100    : 1   Compact:16   Min.   : 6.70  
+<span id="line24"></span> Ford     : 8    190E   : 1   Large  :11   1st Qu.:10.80  
+<span id="line25"></span> Dodge    : 6    240    : 1   Midsize:22   Median :14.70  
+<span id="line26"></span> Mazda    : 5    300E   : 1   Small  :21   Mean   :17.13  
+<span id="line27"></span> Pontiac  : 5    323    : 1   Sporty :14   3rd Qu.:20.30  
+<span id="line28"></span> Buick    : 4    535i   : 1   Van    : 9   Max.   :45.40  
+<span id="line29"></span> (Other)  :57    (Other):87                               
+<span id="line30"></span>     Price         Max.Price       MPG.city      MPG.highway   
+<span id="line31"></span> Min.   : 7.40   Min.   : 7.9   Min.   :15.00   Min.   :20.00  
+<span id="line32"></span> 1st Qu.:12.20   1st Qu.:14.7   1st Qu.:18.00   1st Qu.:26.00  
+<span id="line33"></span> Median :17.70   Median :19.6   Median :21.00   Median :28.00  
+<span id="line34"></span> Mean   :19.51   Mean   :21.9   Mean   :22.37   Mean   :29.09  
+<span id="line35"></span> 3rd Qu.:23.30   3rd Qu.:25.3   3rd Qu.:25.00   3rd Qu.:31.00  
+<span id="line36"></span> Max.   :61.90   Max.   :80.0   Max.   :46.00   Max.   :50.00  
+<span id="line37"></span>                                                               
+<span id="line38"></span>               AirBags   DriveTrain  Cylinders    EngineSize   
+<span id="line39"></span> Driver <span><span>&amp;</span></span> Passenger:16   4WD  :10   3     : 3   Min.   :1.000  
+<span id="line40"></span> Driver only       :43   Front:67   4     :49   1st Qu.:1.800  
+<span id="line41"></span> None              :34   Rear :16   5     : 2   Median :2.400  
+<span id="line42"></span>                                    6     :31   Mean   :2.668  
+<span id="line43"></span>                                    8     : 7   3rd Qu.:3.300  
+<span id="line44"></span>                                    rotary: 1   Max.   :5.700  
+<span id="line45"></span>                                                               
+<span id="line46"></span>   Horsepower         RPM        Rev.per.mile  Man.trans.avail
+<span id="line47"></span> Min.   : 55.0   Min.   :3800   Min.   :1320   No :32         
+<span id="line48"></span> 1st Qu.:103.0   1st Qu.:4800   1st Qu.:1985   Yes:61         
+<span id="line49"></span> Median :140.0   Median :5200   Median :2340                  
+<span id="line50"></span> Mean   :143.8   Mean   :5281   Mean   :2332                  
+<span id="line51"></span> 3rd Qu.:170.0   3rd Qu.:5750   3rd Qu.:2565                  
+<span id="line52"></span> Max.   :300.0   Max.   :6500   Max.   :3755                  
+<span id="line53"></span>                                                              
+<span id="line54"></span> Fuel.tank.capacity   Passengers        Length     
+<span id="line55"></span> Min.   : 9.20      Min.   :2.000   Min.   :141.0  
+<span id="line56"></span> 1st Qu.:14.50      1st Qu.:4.000   1st Qu.:174.0  
+<span id="line57"></span> Median :16.40      Median :5.000   Median :183.0  
+<span id="line58"></span> Mean   :16.66      Mean   :5.086   Mean   :183.2  
+<span id="line59"></span> 3rd Qu.:18.80      3rd Qu.:6.000   3rd Qu.:192.0  
+<span id="line60"></span> Max.   :27.00      Max.   :8.000   Max.   :219.0  
+<span id="line61"></span>                                                   
+<span id="line62"></span>   Wheelbase         Width        Turn.circle    Rear.seat.room 
+<span id="line63"></span> Min.   : 90.0   Min.   :60.00   Min.   :32.00   Min.   :19.00  
+<span id="line64"></span> 1st Qu.: 98.0   1st Qu.:67.00   1st Qu.:37.00   1st Qu.:26.00  
+<span id="line65"></span> Median :103.0   Median :69.00   Median :39.00   Median :27.50  
+<span id="line66"></span> Mean   :103.9   Mean   :69.38   Mean   :38.96   Mean   :27.83  
+<span id="line67"></span> 3rd Qu.:110.0   3rd Qu.:72.00   3rd Qu.:41.00   3rd Qu.:30.00  
+<span id="line68"></span> Max.   :119.0   Max.   :78.00   Max.   :45.00   Max.   :36.00  
+<span id="line69"></span>                                                 NA's   :2      
+<span id="line70"></span>  Luggage.room       Weight         Origin              Make   
+<span id="line71"></span> Min.   : 6.00   Min.   :1695   USA    :48   Acura Integra: 1  
+<span id="line72"></span> 1st Qu.:12.00   1st Qu.:2620   non-USA:45   Acura Legend : 1  
+<span id="line73"></span> Median :14.00   Median :3040                Audi 100     : 1  
+<span id="line74"></span> Mean   :13.89   Mean   :3073                Audi 90      : 1  
+<span id="line75"></span> 3rd Qu.:15.00   3rd Qu.:3525                BMW 535i     : 1  
+<span id="line76"></span> Max.   :22.00   Max.   :4105                Buick Century: 1  
+<span id="line77"></span> NA's   :11                                  (Other)      :87 
+<span id="line78"></span>```
+<span id="line79"></span>
+<span id="line80"></span>По выходным данным команды можно определять количество строк в датафрейме, например посчитав кол-во моделей 1+1+1+1+1+1+87=93.
+<span id="line81"></span>
+<span id="line82"></span>2. Найдите среднюю цену машин с задним приводом.
+<span id="line83"></span>
+<span id="line84"></span>```
+<span id="line85"></span>mean(Cars93[["Price"]][Cars93[["DriveTrain"]]=="Rear"])
+<span id="line86"></span>[1] 28.95
+<span id="line87"></span>```
+<span id="line88"></span>
+<span id="line89"></span>3. Найдите минимальное число лошадиных сил автомобиля для 7 пассажиров. Для 6 пассажиров.
+<span id="line90"></span>
+<span id="line91"></span>```
+<span id="line92"></span>&gt; min(Cars93[["Horsepower"]][Cars93[["Passengers"]]==7])
+<span id="line93"></span>[1] 109
+<span id="line94"></span>&gt; min(Cars93[["Horsepower"]][Cars93[["Passengers"]]==6])
+<span id="line95"></span>[1] 100
+<span id="line96"></span>```
+<span id="line97"></span>
+<span id="line98"></span>4. Найдите машины с максимальным, минимальным и средним(медианой) расстоянием, которая машина может проехать по трассе. Вам понадобятся 2 колонки, чтобы рассчитать расстояние. Какие?
+<span id="line99"></span>
+<span id="line100"></span>```
+<span id="line101"></span>&gt; Cars93["distances"] </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span>c(Cars93[["MPG.highway"]]*Cars93[["Fuel.tank.capacity"]])
+<span id="line102"></span>&gt; 
+<span id="line103"></span>&gt; Cars93[Cars93[ , "distances"] == max(Cars93["distances"]), "Make"]
+<span id="line104"></span>[1] BMW 535i
+<span id="line105"></span>93 Levels: Acura Integra Acura Legend Audi 100 ... Volvo 850
+<span id="line106"></span>&gt; 
+<span id="line107"></span>&gt; Cars93[Cars93[ , "distances"] == min(Cars93["distances"]), "Make"]
+<span id="line108"></span>[1] Mercury Capri
+<span id="line109"></span>93 Levels: Acura Integra Acura Legend Audi 100 ... Volvo 850
+<span id="line110"></span>&gt; 
+<span id="line111"></span>&gt; Cars93[Cars93[ , "distances"] == median(Cars93[["distances"]]), "Make"]
+<span id="line112"></span>[1] Mazda MPV
+<span id="line113"></span>93 Levels: Acura Integra Acura Legend Audi 100 ... Volvo 850
+<span id="line114"></span>```
+<span id="line115"></span>
+<span id="line116"></span>Две калонки для рассчета расстояния: MPG.highway и Fuel.tank.capacity.
+<span id="line117"></span>
+<span id="line118"></span>##Задание 2
+<span id="line119"></span>
+<span id="line120"></span>В самом начале занятий приводился пример с фабрикой и производством автомобилей. Ниже приведён пример кода, который старается оптимизировать выпуск продукции ориентируясь на доступные ресурсы.
+<span id="line121"></span>
+<span id="line122"></span>```
+<span id="line123"></span>factory.run </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> function (o.cars=1, o.trucks=1) {
+<span id="line124"></span>  factory </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> matrix(c(40,1,60,3),nrow=2, dimnames=list(c("трудодни","сталь"),c("автомобили","грузовики")))
+<span id="line125"></span>  warehouse </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> c(1600,70) #Доступно материалов на складе
+<span id="line126"></span>  names(warehouse) </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> rownames(factory)
+<span id="line127"></span>  reserve </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> c(8,1)
+<span id="line128"></span>  names(reserve) </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> rownames(factory)
+<span id="line129"></span>  output </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> c(o.cars, o.trucks)
+<span id="line130"></span>  names(output) </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> colnames(factory)
+<span id="line131"></span>  
+<span id="line132"></span>  steps </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> 0 # Счётчик числа шагов цикла
+<span id="line133"></span>  repeat {
+<span id="line134"></span>    steps </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> steps + 1
+<span id="line135"></span>    needed </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> factory %*% output # Подсчитаем ресурсы, которые нам нужны для производства требуемого кол-ва машин
+<span id="line136"></span>    message(steps)
+<span id="line137"></span>    print(needed)
+<span id="line138"></span>    # Если ресурсов достаточно и остаток меньше или равен резерву, то мы произвели максимум возможного.
+<span id="line139"></span>    # Нужно прекращать
+<span id="line140"></span>    if (all(needed </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;=</span><span> warehouse) <span><span>&amp;</span></span><span><span>&amp;</span></span> all((warehouse - needed) </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;=</span><span> reserve)) {
+<span id="line141"></span>      break()
+<span id="line142"></span>    }
+<span id="line143"></span>    # Если заявка слишком большая и ресурсов недостаточно, уменьшим её на 10%
+<span id="line144"></span>    if (all(needed &gt; warehouse)) {
+<span id="line145"></span>      output </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> output * 0.9
+<span id="line146"></span>      next()
+<span id="line147"></span>    }
+<span id="line148"></span>    # Если всё наоброт, то увеличим на 10%
+<span id="line149"></span>    if (all(needed </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt; </span><span>warehouse)) {
+<span id="line150"></span>      output </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> output * 1.1
+<span id="line151"></span>      next()
+<span id="line152"></span>    }
+<span id="line153"></span>    # Если мы потребили одного ресурса слишком много, а другого недостаточно,
+<span id="line154"></span>    # то увеличим план на случайную величину
+<span id="line155"></span>    output </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> output * (1+runif(length(output),min=-0.1,max=0.1))
+<span id="line156"></span>  }
+<span id="line157"></span>  
+<span id="line158"></span>  return(output)
+<span id="line159"></span>}
+<span id="line160"></span>```
+<span id="line161"></span>1. Выполните код и запустите эту функцию factory.run().
+<span id="line162"></span>
+<span id="line163"></span>```
+<span id="line164"></span>result1 </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> factory.run()
+<span id="line165"></span>```
+<span id="line166"></span>2. С каким входными значениями функция вызвана? Какой получился результат? 
+<span id="line167"></span>
+<span id="line168"></span>```
+<span id="line169"></span>&gt; result1 
+<span id="line170"></span>автомобили  грузовики 
+<span id="line171"></span>  10.30741   19.78060 
+<span id="line172"></span>```
+<span id="line173"></span>Изначально по плану изготовка 1-го автомобиля и 1-го грузовика. В результате выполнения шагов выводятся затрачиваемые ресурсы (трудодни и сталь) и № шага цикла.В результате выводится количество автомобилей и грузовиков, которое можно изготовить.
+<span id="line174"></span>
+<span id="line175"></span>3. Повторите вызов 4 раза. Полученные ответы отличаются от полученных ранее? Если да, почему? Если нет, почему?
+<span id="line176"></span>
+<span id="line177"></span>```
+<span id="line178"></span>result2
+<span id="line179"></span>автомобили  грузовики 
+<span id="line180"></span>  10.22484   19.76254 
+<span id="line181"></span>  
+<span id="line182"></span>result3
+<span id="line183"></span>автомобили  грузовики 
+<span id="line184"></span>  9.872024  19.971587 
+<span id="line185"></span>  
+<span id="line186"></span>result4
+<span id="line187"></span>автомобили  грузовики 
+<span id="line188"></span>  10.00521   19.87134 
+<span id="line189"></span>
+<span id="line190"></span>result5
+<span id="line191"></span>автомобили  грузовики 
+<span id="line192"></span>  10.19081   19.81228 
+<span id="line193"></span>```
+<span id="line194"></span>
+<span id="line195"></span>Отличия наблюдаются из-за рандомных чисел в алгоритме.
+<span id="line196"></span>
+<span id="line197"></span>4. В приведённом коде, переменные steps и output находятся внутри алгоритма. Измените функцию так, чтобы она возвращала число шагов и произведённое количество машин.
+<span id="line198"></span>
+<span id="line199"></span>```
+<span id="line200"></span>factory.run </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> function(o.cars = 1, o.trucks = 1) {
+<span id="line201"></span>  factory </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> matrix(c(40, 1, 60, 3), nrow = 2, dimnames = list(c("трудодни", "сталь"), c("автомобили", "грузовики")))
+<span id="line202"></span>  warehouse </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> c(1600, 70) #Доступно материалов на складе
+<span id="line203"></span>  names(warehouse) </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> rownames(factory)
+<span id="line204"></span>  reserve </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> c(8, 1)
+<span id="line205"></span>  names(reserve) </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> rownames(factory)
+<span id="line206"></span>  output </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> c(o.cars, o.trucks)
+<span id="line207"></span>  names(output) </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> colnames(factory)
+<span id="line208"></span>  
+<span id="line209"></span>  steps </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> 0 # Счётчик числа шагов цикла
+<span id="line210"></span>  repeat {
+<span id="line211"></span>    steps </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> steps + 1
+<span id="line212"></span>    needed </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> factory %*% output # Подсчитаем ресурсы, которые нам нужны для производства требуемого кол-ва машин
+<span id="line213"></span>    # Если ресурсов достаточно и остаток меньше или равен резерву, то мы произвели максимум возможного.
+<span id="line214"></span>    # Нужно прекращать
+<span id="line215"></span>    if (all(needed </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;=</span><span> warehouse) <span><span>&amp;</span></span><span><span>&amp;</span></span> all((warehouse - needed) </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;=</span><span> reserve)) {
+<span id="line216"></span>      break ()
+<span id="line217"></span>    }
+<span id="line218"></span>    # Если заявка слишком большая и ресурсов недостаточно, уменьшим её на 10%
+<span id="line219"></span>    if (all(needed &gt; warehouse)) {
+<span id="line220"></span>      output </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> output * 0.9
+<span id="line221"></span>      next ()
+<span id="line222"></span>    }
+<span id="line223"></span>    # Если всё наоброт, то увеличим на 10%
+<span id="line224"></span>    if (all(needed </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt; </span><span>warehouse)) {
+<span id="line225"></span>      output </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> output * 1.1
+<span id="line226"></span>      next ()
+<span id="line227"></span>    }
+<span id="line228"></span>    # Если мы потребили одного ресурса слишком много, а другого недостаточно,
+<span id="line229"></span>    # то увеличим план на случайную величину
+<span id="line230"></span>    output </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> output * (1 + runif(length(output), min = -0.1, max = 0.1))
+<span id="line231"></span>  }
+<span id="line232"></span>  print(needed)
+<span id="line233"></span>  message(steps)
+<span id="line234"></span>  return(trunc(output))
+<span id="line235"></span>}
+<span id="line236"></span>factory.run()
+<span id="line237"></span>```
+<span id="line238"></span>
+<span id="line239"></span>5. Установите план равный тридцати автомобилям и 20 грузовикам и выполните функцию.
+<span id="line240"></span>
+<span id="line241"></span>```
+<span id="line242"></span>result6 </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> factory.run(30, 20)
+<span id="line243"></span>```
+<span id="line244"></span>
+<span id="line245"></span>i. Какой получили результат?
+<span id="line246"></span>
+<span id="line247"></span>```
+<span id="line248"></span>автомобили  грузовики 
+<span id="line249"></span>         9         19 
+<span id="line250"></span>```
+<span id="line251"></span>
+<span id="line252"></span>ii. Каким получился итоговый запрос ресурсов (переменная needed)
+<span id="line253"></span>
+<span id="line254"></span>```
+<span id="line255"></span>трудодни 1593.71214
+<span id="line256"></span>сталь      69.78575
+<span id="line257"></span>```
+<span id="line258"></span>
+<span id="line259"></span>iii. Как много итераций пришлось пройти, чтобы получить ответ (переменная steps)?
+<span id="line260"></span>
+<span id="line261"></span>```
+<span id="line262"></span>711
+<span id="line263"></span>```
+<span id="line264"></span>
+<span id="line265"></span>iv. Для подсчёта можно пользоваться функциями печати (print, message) или вернуть результат из функции.
+<span id="line266"></span>
+<span id="line267"></span>```
+<span id="line268"></span>  print(needed)
+<span id="line269"></span>  message(steps)
+<span id="line270"></span>```</span></pre><menu type="context" id="actions"><menuitem id="goToLine" label="Перейти к строке…" accesskey="е"></menuitem><menuitem id="wrapLongLines" label="Переносить длинные строки" type="checkbox"></menuitem><menuitem id="highlightSyntax" label="Подсветка синтаксиса" type="checkbox" checked="true"></menuitem></menu></body></html>

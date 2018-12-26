@@ -1,0 +1,270 @@
+#Лабораторная работа №2
+
+##Козарев М.Ю. РИ-450005
+
+##Исходные данные
+
+Установленная среда R включает в себя набор заранее сконфигурированных массивов данных. В данной лабораторной требуется использовать одну из них — датафрейм из 93 машин-новинок 1993 года. Для того, чтобы загрузить данный датафрейм, необходимо выполнить следующие команды:
+
+```
+library(MASS)
+data(Cars93)
+```
+
+Для того, чтобы ознакомиться со структурой и составом данных, можно выполнить команду View(Cars93) или нажать на соответствующую кнопку в RStudio.
+
+##Задание 1
+
+1. Выполните команду summary() на полном наборе данных. Можно ли по результату выполнения сказать сколько строк в датафрейме? Если да, напишите сколько. Если нет, то приведите другой способ.
+
+```
+summary(Cars93)
+ Manufacturer     Model         Type      Min.Price    
+ Chevrolet: 8    100    : 1   Compact:16   Min.   : 6.70  
+ Ford     : 8    190E   : 1   Large  :11   1st Qu.:10.80  
+ Dodge    : 6    240    : 1   Midsize:22   Median :14.70  
+ Mazda    : 5    300E   : 1   Small  :21   Mean   :17.13  
+ Pontiac  : 5    323    : 1   Sporty :14   3rd Qu.:20.30  
+ Buick    : 4    535i   : 1   Van    : 9   Max.   :45.40  
+ (Other)  :57    (Other):87                               
+     Price         Max.Price       MPG.city      MPG.highway   
+ Min.   : 7.40   Min.   : 7.9   Min.   :15.00   Min.   :20.00  
+ 1st Qu.:12.20   1st Qu.:14.7   1st Qu.:18.00   1st Qu.:26.00  
+ Median :17.70   Median :19.6   Median :21.00   Median :28.00  
+ Mean   :19.51   Mean   :21.9   Mean   :22.37   Mean   :29.09  
+ 3rd Qu.:23.30   3rd Qu.:25.3   3rd Qu.:25.00   3rd Qu.:31.00  
+ Max.   :61.90   Max.   :80.0   Max.   :46.00   Max.   :50.00  
+                                                               
+               AirBags   DriveTrain  Cylinders    EngineSize   
+ Driver & Passenger:16   4WD  :10   3     : 3   Min.   :1.000  
+ Driver only       :43   Front:67   4     :49   1st Qu.:1.800  
+ None              :34   Rear :16   5     : 2   Median :2.400  
+                                    6     :31   Mean   :2.668  
+                                    8     : 7   3rd Qu.:3.300  
+                                    rotary: 1   Max.   :5.700  
+                                                               
+   Horsepower         RPM        Rev.per.mile  Man.trans.avail
+ Min.   : 55.0   Min.   :3800   Min.   :1320   No :32         
+ 1st Qu.:103.0   1st Qu.:4800   1st Qu.:1985   Yes:61         
+ Median :140.0   Median :5200   Median :2340                  
+ Mean   :143.8   Mean   :5281   Mean   :2332                  
+ 3rd Qu.:170.0   3rd Qu.:5750   3rd Qu.:2565                  
+ Max.   :300.0   Max.   :6500   Max.   :3755                  
+                                                              
+ Fuel.tank.capacity   Passengers        Length     
+ Min.   : 9.20      Min.   :2.000   Min.   :141.0  
+ 1st Qu.:14.50      1st Qu.:4.000   1st Qu.:174.0  
+ Median :16.40      Median :5.000   Median :183.0  
+ Mean   :16.66      Mean   :5.086   Mean   :183.2  
+ 3rd Qu.:18.80      3rd Qu.:6.000   3rd Qu.:192.0  
+ Max.   :27.00      Max.   :8.000   Max.   :219.0  
+                                                   
+   Wheelbase         Width        Turn.circle    Rear.seat.room 
+ Min.   : 90.0   Min.   :60.00   Min.   :32.00   Min.   :19.00  
+ 1st Qu.: 98.0   1st Qu.:67.00   1st Qu.:37.00   1st Qu.:26.00  
+ Median :103.0   Median :69.00   Median :39.00   Median :27.50  
+ Mean   :103.9   Mean   :69.38   Mean   :38.96   Mean   :27.83  
+ 3rd Qu.:110.0   3rd Qu.:72.00   3rd Qu.:41.00   3rd Qu.:30.00  
+ Max.   :119.0   Max.   :78.00   Max.   :45.00   Max.   :36.00  
+                                                 NA's   :2      
+  Luggage.room       Weight         Origin              Make   
+ Min.   : 6.00   Min.   :1695   USA    :48   Acura Integra: 1  
+ 1st Qu.:12.00   1st Qu.:2620   non-USA:45   Acura Legend : 1  
+ Median :14.00   Median :3040                Audi 100     : 1  
+ Mean   :13.89   Mean   :3073                Audi 90      : 1  
+ 3rd Qu.:15.00   3rd Qu.:3525                BMW 535i     : 1  
+ Max.   :22.00   Max.   :4105                Buick Century: 1  
+ NA's   :11                                  (Other)      :87 
+```
+
+По выходным данным команды можно определять количество строк в датафрейме, например посчитав кол-во моделей 1+1+1+1+1+1+87=93.
+
+2. Найдите среднюю цену машин с задним приводом.
+
+```
+mean(Cars93[["Price"]][Cars93[["DriveTrain"]]=="Rear"])
+[1] 28.95
+```
+
+3. Найдите минимальное число лошадиных сил автомобиля для 7 пассажиров. Для 6 пассажиров.
+
+```
+> min(Cars93[["Horsepower"]][Cars93[["Passengers"]]==7])
+[1] 109
+> min(Cars93[["Horsepower"]][Cars93[["Passengers"]]==6])
+[1] 100
+```
+
+4. Найдите машины с максимальным, минимальным и средним(медианой) расстоянием, которая машина может проехать по трассе. Вам понадобятся 2 колонки, чтобы рассчитать расстояние. Какие?
+
+```
+> Cars93["distances"] <-c(Cars93[["MPG.highway"]]*Cars93[["Fuel.tank.capacity"]])
+> 
+> Cars93[Cars93[ , "distances"] == max(Cars93["distances"]), "Make"]
+[1] BMW 535i
+93 Levels: Acura Integra Acura Legend Audi 100 ... Volvo 850
+> 
+> Cars93[Cars93[ , "distances"] == min(Cars93["distances"]), "Make"]
+[1] Mercury Capri
+93 Levels: Acura Integra Acura Legend Audi 100 ... Volvo 850
+> 
+> Cars93[Cars93[ , "distances"] == median(Cars93[["distances"]]), "Make"]
+[1] Mazda MPV
+93 Levels: Acura Integra Acura Legend Audi 100 ... Volvo 850
+```
+
+Две калонки для рассчета расстояния: MPG.highway и Fuel.tank.capacity.
+
+##Задание 2
+
+В самом начале занятий приводился пример с фабрикой и производством автомобилей. Ниже приведён пример кода, который старается оптимизировать выпуск продукции ориентируясь на доступные ресурсы.
+
+```
+factory.run <- function (o.cars=1, o.trucks=1) {
+  factory <- matrix(c(40,1,60,3),nrow=2, dimnames=list(c("трудодни","сталь"),c("автомобили","грузовики")))
+  warehouse <- c(1600,70) #Доступно материалов на складе
+  names(warehouse) <- rownames(factory)
+  reserve <- c(8,1)
+  names(reserve) <- rownames(factory)
+  output <- c(o.cars, o.trucks)
+  names(output) <- colnames(factory)
+  
+  steps <- 0 # Счётчик числа шагов цикла
+  repeat {
+    steps <- steps + 1
+    needed <- factory %*% output # Подсчитаем ресурсы, которые нам нужны для производства требуемого кол-ва машин
+    message(steps)
+    print(needed)
+    # Если ресурсов достаточно и остаток меньше или равен резерву, то мы произвели максимум возможного.
+    # Нужно прекращать
+    if (all(needed <= warehouse) && all((warehouse - needed) <= reserve)) {
+      break()
+    }
+    # Если заявка слишком большая и ресурсов недостаточно, уменьшим её на 10%
+    if (all(needed > warehouse)) {
+      output <- output * 0.9
+      next()
+    }
+    # Если всё наоброт, то увеличим на 10%
+    if (all(needed < warehouse)) {
+      output <- output * 1.1
+      next()
+    }
+    # Если мы потребили одного ресурса слишком много, а другого недостаточно,
+    # то увеличим план на случайную величину
+    output <- output * (1+runif(length(output),min=-0.1,max=0.1))
+  }
+  
+  return(output)
+}
+```
+1. Выполните код и запустите эту функцию factory.run().
+
+```
+result1 <- factory.run()
+```
+2. С каким входными значениями функция вызвана? Какой получился результат? 
+
+```
+> result1 
+автомобили  грузовики 
+  10.30741   19.78060 
+```
+Изначально по плану изготовка 1-го автомобиля и 1-го грузовика. В результате выполнения шагов выводятся затрачиваемые ресурсы (трудодни и сталь) и № шага цикла.В результате выводится количество автомобилей и грузовиков, которое можно изготовить.
+
+3. Повторите вызов 4 раза. Полученные ответы отличаются от полученных ранее? Если да, почему? Если нет, почему?
+
+```
+result2
+автомобили  грузовики 
+  10.22484   19.76254 
+  
+result3
+автомобили  грузовики 
+  9.872024  19.971587 
+  
+result4
+автомобили  грузовики 
+  10.00521   19.87134 
+
+result5
+автомобили  грузовики 
+  10.19081   19.81228 
+```
+
+Отличия наблюдаются из-за рандомных чисел в алгоритме.
+
+4. В приведённом коде, переменные steps и output находятся внутри алгоритма. Измените функцию так, чтобы она возвращала число шагов и произведённое количество машин.
+
+```
+factory.run <- function(o.cars = 1, o.trucks = 1) {
+  factory <- matrix(c(40, 1, 60, 3), nrow = 2, dimnames = list(c("трудодни", "сталь"), c("автомобили", "грузовики")))
+  warehouse <- c(1600, 70) #Доступно материалов на складе
+  names(warehouse) <- rownames(factory)
+  reserve <- c(8, 1)
+  names(reserve) <- rownames(factory)
+  output <- c(o.cars, o.trucks)
+  names(output) <- colnames(factory)
+  
+  steps <- 0 # Счётчик числа шагов цикла
+  repeat {
+    steps <- steps + 1
+    needed <- factory %*% output # Подсчитаем ресурсы, которые нам нужны для производства требуемого кол-ва машин
+    # Если ресурсов достаточно и остаток меньше или равен резерву, то мы произвели максимум возможного.
+    # Нужно прекращать
+    if (all(needed <= warehouse) && all((warehouse - needed) <= reserve)) {
+      break ()
+    }
+    # Если заявка слишком большая и ресурсов недостаточно, уменьшим её на 10%
+    if (all(needed > warehouse)) {
+      output <- output * 0.9
+      next ()
+    }
+    # Если всё наоброт, то увеличим на 10%
+    if (all(needed < warehouse)) {
+      output <- output * 1.1
+      next ()
+    }
+    # Если мы потребили одного ресурса слишком много, а другого недостаточно,
+    # то увеличим план на случайную величину
+    output <- output * (1 + runif(length(output), min = -0.1, max = 0.1))
+  }
+  print(needed)
+  message(steps)
+  return(trunc(output))
+}
+factory.run()
+```
+
+5. Установите план равный тридцати автомобилям и 20 грузовикам и выполните функцию.
+
+```
+result6 <- factory.run(30, 20)
+```
+
+i. Какой получили результат?
+
+```
+автомобили  грузовики 
+         9         19 
+```
+
+ii. Каким получился итоговый запрос ресурсов (переменная needed)
+
+```
+трудодни 1593.71214
+сталь      69.78575
+```
+
+iii. Как много итераций пришлось пройти, чтобы получить ответ (переменная steps)?
+
+```
+711
+```
+
+iv. Для подсчёта можно пользоваться функциями печати (print, message) или вернуть результат из функции.
+
+```
+  print(needed)
+  message(steps)
+```
