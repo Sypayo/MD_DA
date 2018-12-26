@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1251"><meta name="viewport" content="width=device-width"><title>file:///C:/Users/%D0%9C%D0%B0%D0%BA%D1%81%D0%B8%D0%BC/Desktop/MD_DA-master/Lab%205/Lab5.html</title><link rel="stylesheet" type="text/css" href="resource://content-accessible/viewsource.css"></head><body id="viewsource" class="highlight" style="-moz-tab-size: 4" contextmenu="actions"><pre id="line1"><span># Лабораторная работа №5
+<span id="line2"></span>## Козарев М.Ю. РИ-450005
+<span id="line3"></span>
+<span id="line4"></span>#Загрузим данные (требуется установить Рабочую папку с помощью setwd) или указать полный путь
+<span id="line5"></span>
+<span id="line6"></span>```
+<span id="line7"></span>data = read.csv(file="diet.csv")
+<span id="line8"></span>&gt; summary(data)
+<span id="line9"></span>     Person          gender            Age       
+<span id="line10"></span> Min.   : 1.00   Min.   :0.0000   Min.   :16.00  
+<span id="line11"></span> 1st Qu.:20.25   1st Qu.:0.0000   1st Qu.:32.25  
+<span id="line12"></span> Median :39.50   Median :0.0000   Median :39.00  
+<span id="line13"></span> Mean   :39.50   Mean   :0.4342   Mean   :39.15  
+<span id="line14"></span> 3rd Qu.:58.75   3rd Qu.:1.0000   3rd Qu.:46.75  
+<span id="line15"></span> Max.   :78.00   Max.   :1.0000   Max.   :60.00  
+<span id="line16"></span>                 NA's   :2                       
+<span id="line17"></span>     Height        pre.weight          Diet      
+<span id="line18"></span> Min.   :141.0   Min.   : 58.00   Min.   :1.000  
+<span id="line19"></span> 1st Qu.:164.2   1st Qu.: 66.00   1st Qu.:1.000  
+<span id="line20"></span> Median :169.5   Median : 72.00   Median :2.000  
+<span id="line21"></span> Mean   :170.8   Mean   : 72.53   Mean   :2.038  
+<span id="line22"></span> 3rd Qu.:174.8   3rd Qu.: 78.00   3rd Qu.:3.000  
+<span id="line23"></span> Max.   :201.0   Max.   :103.00   Max.   :3.000  
+<span id="line24"></span>                                                 
+<span id="line25"></span>  weight6weeks   
+<span id="line26"></span> Min.   : 53.00  
+<span id="line27"></span> 1st Qu.: 61.85  
+<span id="line28"></span> Median : 68.95  
+<span id="line29"></span> Mean   : 68.68  
+<span id="line30"></span> 3rd Qu.: 73.83  
+<span id="line31"></span> Max.   :103.00  
+<span id="line32"></span>                 
+<span id="line33"></span>```
+<span id="line34"></span>
+<span id="line35"></span>#Ознакомимся со структурой и переименуем колонки, как нам удобно
+<span id="line36"></span>#https://www.sheffield.ac.uk/polopoly_fs/1.547015!/file/Diet_data_description.docx
+<span id="line37"></span>#https://www.sheffield.ac.uk/mash/data
+<span id="line38"></span>
+<span id="line39"></span>```
+<span id="line40"></span>colnames(data) </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> c("gender", "age", "height", "initial.weight", 
+<span id="line41"></span>                    "diet.type", "final.weight")
+<span id="line42"></span>data$diet.type </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> factor(c("A", "B", "C")[data$diet.type])
+<span id="line43"></span>```
+<span id="line44"></span>
+<span id="line45"></span>#Добавим новую колонку - Похудение
+<span id="line46"></span>
+<span id="line47"></span>```
+<span id="line48"></span>data$weight.loss = data$initial.weight - data$final.weight
+<span id="line49"></span>```
+<span id="line50"></span>
+<span id="line51"></span>#Проанализиуем есть ли различия по типам диет
+<span id="line52"></span>
+<span id="line53"></span>```
+<span id="line54"></span>boxplot(weight.loss~diet.type,data=data,col="light gray",
+<span id="line55"></span>        ylab = "Weight loss (kg)", xlab = "Diet type")
+<span id="line56"></span>abline(h=0,col="green")
+<span id="line57"></span>```
+<span id="line58"></span>
+<span id="line59"></span>#проверим сбалансированные ли данные
+<span id="line60"></span>
+<span id="line61"></span>```
+<span id="line62"></span>table(data$diet.type)
+<span id="line63"></span>A  B  C 
+<span id="line64"></span>24 27 27
+<span id="line65"></span>```
+<span id="line66"></span>
+<span id="line67"></span>#График групповых средних
+<span id="line68"></span>
+<span id="line69"></span>```
+<span id="line70"></span>library(gplots) #библиотека устанавлевается с помощью install.packages
+<span id="line71"></span>plotmeans(weight.loss ~ diet.type, data=data)
+<span id="line72"></span>aggregate(data$weight.loss, by = list(data$diet.type), FUN=sd)
+<span id="line73"></span>  Group.1        x
+<span id="line74"></span>1       A 2.240148
+<span id="line75"></span>2       B 2.523367
+<span id="line76"></span>3       C 2.395568
+<span id="line77"></span>```
+<span id="line78"></span>
+<span id="line79"></span>#Для подгонки ANOVA модели используем функцию aov, частный случай линейной модели lm
+<span id="line80"></span>#тест на межгрупповые различия
+<span id="line81"></span>
+<span id="line82"></span>```
+<span id="line83"></span>fit </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> aov(weight.loss ~ diet.type, data=data)
+<span id="line84"></span>summary(fit)
+<span id="line85"></span>           Df Sum Sq Mean Sq F value
+<span id="line86"></span>diet.type    2   71.1   35.55   6.197
+<span id="line87"></span>Residuals   75  430.2    5.74        
+<span id="line88"></span>             Pr(&gt;F)   
+<span id="line89"></span>diet.type   0.00323 **
+<span id="line90"></span>Residuals             
+<span id="line91"></span>---
+<span id="line92"></span>Signif. codes:  
+<span id="line93"></span>  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
+<span id="line94"></span>  0.1 ‘ ’ 1
+<span id="line95"></span>```
+<span id="line96"></span>
+<span id="line97"></span>#попарные различия между средними значениями для всех групп
+<span id="line98"></span>
+<span id="line99"></span>```
+<span id="line100"></span>TukeyHSD(fit)
+<span id="line101"></span>Tukey multiple comparisons of means
+<span id="line102"></span>    95% family-wise confidence level
+<span id="line103"></span>Fit: aov(formula = weight.loss ~ diet.type, data = data)
+<span id="line104"></span>$`diet.type`
+<span id="line105"></span>          diff        lwr      upr
+<span id="line106"></span>B-A -0.2740741 -1.8806155 1.332467
+<span id="line107"></span>C-A  1.8481481  0.2416067 3.454690
+<span id="line108"></span>C-B  2.1222222  0.5636481 3.680796
+<span id="line109"></span>        p adj
+<span id="line110"></span>B-A 0.9124737
+<span id="line111"></span>C-A 0.0201413
+<span id="line112"></span>C-B 0.0047819
+<span id="line113"></span>```
+<span id="line114"></span>
+<span id="line115"></span>#Tukey honest significant differences test)
+<span id="line116"></span>
+<span id="line117"></span>```
+<span id="line118"></span>library(multcomp)
+<span id="line119"></span>par(mar=c(5,4,6,2))
+<span id="line120"></span>tuk </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> glht(fit, linfct=mcp(diet.type="Tukey"))
+<span id="line121"></span>plot(cld(tuk, level=.05),col="lightgrey")
+<span id="line122"></span>```
+<span id="line123"></span>
+<span id="line124"></span>#Задание
+<span id="line125"></span>#Добавить проверку на выборы и избавиться от них
+<span id="line126"></span>
+<span id="line127"></span>```
+<span id="line128"></span>plot(data$weight.loss ~ data$diet.type)
+<span id="line129"></span>&gt; data </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> data[data$weight.loss&gt;=0 <span><span>&amp;</span></span> data$weight.loss </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;=</span><span> 8, ]
+<span id="line130"></span>```
+<span id="line131"></span>
+<span id="line132"></span>#повторно проверсти все тесты и сравнить результаты с выбросами и без
+<span id="line133"></span>
+<span id="line134"></span>```
+<span id="line135"></span>&gt; boxplot(weight.loss~diet.type,data=data,col="light gray",
+<span id="line136"></span>+         ylab = "Weight loss (kg)", xlab = "Diet type")
+<span id="line137"></span>```
+<span id="line138"></span>
+<span id="line139"></span>### Сбалансированость выборки
+<span id="line140"></span>
+<span id="line141"></span>```
+<span id="line142"></span>table(data$diet.type)
+<span id="line143"></span> A  B  C 
+<span id="line144"></span>21 24 25 
+<span id="line145"></span>```
+<span id="line146"></span>
+<span id="line147"></span>### График групповых средних
+<span id="line148"></span>
+<span id="line149"></span>```
+<span id="line150"></span>plotmeans(weight.loss ~ diet.type, data=data)
+<span id="line151"></span>aggregate(data$weight.loss, by = list(data$diet.type), FUN=sd)
+<span id="line152"></span>  Group.1        x
+<span id="line153"></span>1       A 1.384678
+<span id="line154"></span>2       B 2.086495
+<span id="line155"></span>3       C 2.223196
+<span id="line156"></span>```
+<span id="line157"></span>
+<span id="line158"></span>### Для подгонки ANOVA модели используем функцию aov, частный случай линейной модели lm тест на межгрупповые различия
+<span id="line159"></span>
+<span id="line160"></span>```
+<span id="line161"></span>fit </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> aov(weight.loss ~ diet.type, data=data)
+<span id="line162"></span>summary(fit)
+<span id="line163"></span>            Df Sum Sq Mean Sq F value
+<span id="line164"></span>diet.type    2  43.16  21.578   5.623
+<span id="line165"></span>Residuals   67 257.10   3.837        
+<span id="line166"></span>             Pr(&gt;F)   
+<span id="line167"></span>diet.type   0.00553 **
+<span id="line168"></span>Residuals             
+<span id="line169"></span>---
+<span id="line170"></span>Signif. codes:  
+<span id="line171"></span>  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’
+<span id="line172"></span>  0.1 ‘ ’ 1
+<span id="line173"></span>```
+<span id="line174"></span>
+<span id="line175"></span>### Попарные различия между средними значениями для всех групп
+<span id="line176"></span>
+<span id="line177"></span>```
+<span id="line178"></span>TukeyHSD(fit)
+<span id="line179"></span>  Tukey multiple comparisons of means
+<span id="line180"></span>    95% family-wise confidence level
+<span id="line181"></span>Fit: aov(formula = weight.loss ~ diet.type, data = data)
+<span id="line182"></span>$`diet.type`
+<span id="line183"></span>         diff         lwr      upr
+<span id="line184"></span>B-A 0.6041667 -0.79880872 2.007142
+<span id="line185"></span>C-A 1.8813333  0.49151406 3.271153
+<span id="line186"></span>C-B 1.2771667 -0.06461384 2.618947
+<span id="line187"></span>        p adj
+<span id="line188"></span>B-A 0.5593442
+<span id="line189"></span>C-A 0.0051569
+<span id="line190"></span>C-B 0.0653789
+<span id="line191"></span>```
+<span id="line192"></span>
+<span id="line193"></span>### Tukey honest significant differences test
+<span id="line194"></span>
+<span id="line195"></span>```
+<span id="line196"></span>par(mar=c(5,4,6,2))
+<span id="line197"></span>tuk </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> glht(fit, linfct=mcp(diet.type="Tukey"))
+<span id="line198"></span>plot(cld(tuk, level=.05),col="lightgrey")
+<span id="line199"></span>```
+<span id="line200"></span>
+<span id="line201"></span>### Диета B стала лучше диаеты A.
+<span id="line202"></span>
+<span id="line203"></span>### Зависимость потери веса от пола
+<span id="line204"></span>
+<span id="line205"></span>### Удалим пустые клетки в столбце "пол"
+<span id="line206"></span>
+<span id="line207"></span>```
+<span id="line208"></span>&gt; data$gender </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> factor( c('Female', 'Male')[as.ordered(data$gender)] )
+<span id="line209"></span>&gt; 
+<span id="line210"></span>&gt; summary(data)
+<span id="line211"></span>    gender        age       
+<span id="line212"></span> Female:40   Min.   :16.00  
+<span id="line213"></span> Male  :28   1st Qu.:33.00  
+<span id="line214"></span> NA's  : 2   Median :39.50  
+<span id="line215"></span>             Mean   :39.51  
+<span id="line216"></span>             3rd Qu.:48.00  
+<span id="line217"></span>             Max.   :60.00  
+<span id="line218"></span>     height      initial.weight  
+<span id="line219"></span> Min.   :141.0   Min.   : 58.00  
+<span id="line220"></span> 1st Qu.:163.2   1st Qu.: 65.25  
+<span id="line221"></span> Median :169.5   Median : 72.00  
+<span id="line222"></span> Mean   :170.7   Mean   : 72.24  
+<span id="line223"></span> 3rd Qu.:174.0   3rd Qu.: 78.00  
+<span id="line224"></span> Max.   :201.0   Max.   :103.00  
+<span id="line225"></span> diet.type  final.weight   
+<span id="line226"></span> A:21      Min.   : 53.00  
+<span id="line227"></span> B:24      1st Qu.: 61.85  
+<span id="line228"></span> C:25      Median : 68.60  
+<span id="line229"></span>           Mean   : 68.40  
+<span id="line230"></span>           3rd Qu.: 73.42  
+<span id="line231"></span>           Max.   :103.00  
+<span id="line232"></span>  weight.loss   
+<span id="line233"></span> Min.   :0.000  
+<span id="line234"></span> 1st Qu.:2.400  
+<span id="line235"></span> Median :3.600  
+<span id="line236"></span> Mean   :3.846  
+<span id="line237"></span> 3rd Qu.:5.375  
+<span id="line238"></span> Max.   :7.900  
+<span id="line239"></span>```
+<span id="line240"></span>
+<span id="line241"></span>### Проверка на сбалансированность выборки
+<span id="line242"></span>
+<span id="line243"></span>```
+<span id="line244"></span>table(data$gender)
+<span id="line245"></span>Female   Male 
+<span id="line246"></span>    40     28 
+<span id="line247"></span>```
+<span id="line248"></span>
+<span id="line249"></span>### Для подгонки ANOVA модели используем функцию aov, частный случай линейной модели lm тест на межгрупповые различия
+<span id="line250"></span>
+<span id="line251"></span>```
+<span id="line252"></span>&gt; fit </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> aov(weight.loss ~ gender, data=data)
+<span id="line253"></span>&gt; 
+<span id="line254"></span>&gt; summary(fit)
+<span id="line255"></span>            Df Sum Sq Mean Sq F value
+<span id="line256"></span>gender       1    0.6   0.601   0.147
+<span id="line257"></span>Residuals   66  269.2   4.079        
+<span id="line258"></span>            Pr(&gt;F)
+<span id="line259"></span>gender       0.702
+<span id="line260"></span>Residuals         
+<span id="line261"></span>2 observations deleted due to missingness
+<span id="line262"></span>```
+<span id="line263"></span>
+<span id="line264"></span>### Попарные различия между средними значениями для всех групп
+<span id="line265"></span>
+<span id="line266"></span>```
+<span id="line267"></span>THSD </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> TukeyHSD(fit)
+<span id="line268"></span>```
+<span id="line269"></span>
+<span id="line270"></span>### Tukey honest significant differences test
+<span id="line271"></span>
+<span id="line272"></span>```
+<span id="line273"></span>&gt; THSD </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> TukeyHSD(fit)
+<span id="line274"></span>&gt; 
+<span id="line275"></span>&gt; par(mar=c(5,4,6,2))
+<span id="line276"></span>&gt; 
+<span id="line277"></span>&gt; tuk </span><span class="error" title="Некорректный символ после «&lt;». Вероятная причина: Неэкранированный «&lt;». Попробуйте экранировать его как «&amp;lt;».">&lt;-</span><span> glht(fit, linfct=mcp(gender="Tukey"))
+<span id="line278"></span>&gt; 
+<span id="line279"></span>&gt; plot(cld(tuk, level=.05),col="lightgrey")
+<span id="line280"></span>```
+<span id="line281"></span>
+<span id="line282"></span>Проведя исследование, получаем, что худение мало зависит от пола. </span></pre><menu type="context" id="actions"><menuitem id="goToLine" label="Перейти к строке…" accesskey="е"></menuitem><menuitem id="wrapLongLines" label="Переносить длинные строки" type="checkbox"></menuitem><menuitem id="highlightSyntax" label="Подсветка синтаксиса" type="checkbox" checked="true"></menuitem></menu></body></html>

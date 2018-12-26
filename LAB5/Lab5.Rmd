@@ -1,0 +1,282 @@
+# Ћабораторна€ работа є5
+##  озарев ћ.ё. –»-450005
+
+#«агрузим данные (требуетс€ установить –абочую папку с помощью setwd) или указать полный путь
+
+```
+data = read.csv(file="diet.csv")
+> summary(data)
+     Person          gender            Age       
+ Min.   : 1.00   Min.   :0.0000   Min.   :16.00  
+ 1st Qu.:20.25   1st Qu.:0.0000   1st Qu.:32.25  
+ Median :39.50   Median :0.0000   Median :39.00  
+ Mean   :39.50   Mean   :0.4342   Mean   :39.15  
+ 3rd Qu.:58.75   3rd Qu.:1.0000   3rd Qu.:46.75  
+ Max.   :78.00   Max.   :1.0000   Max.   :60.00  
+                 NA's   :2                       
+     Height        pre.weight          Diet      
+ Min.   :141.0   Min.   : 58.00   Min.   :1.000  
+ 1st Qu.:164.2   1st Qu.: 66.00   1st Qu.:1.000  
+ Median :169.5   Median : 72.00   Median :2.000  
+ Mean   :170.8   Mean   : 72.53   Mean   :2.038  
+ 3rd Qu.:174.8   3rd Qu.: 78.00   3rd Qu.:3.000  
+ Max.   :201.0   Max.   :103.00   Max.   :3.000  
+                                                 
+  weight6weeks   
+ Min.   : 53.00  
+ 1st Qu.: 61.85  
+ Median : 68.95  
+ Mean   : 68.68  
+ 3rd Qu.: 73.83  
+ Max.   :103.00  
+                 
+```
+
+#ќзнакомимс€ со структурой и переименуем колонки, как нам удобно
+#https://www.sheffield.ac.uk/polopoly_fs/1.547015!/file/Diet_data_description.docx
+#https://www.sheffield.ac.uk/mash/data
+
+```
+colnames(data) <- c("gender", "age", "height", "initial.weight", 
+                    "diet.type", "final.weight")
+data$diet.type <- factor(c("A", "B", "C")[data$diet.type])
+```
+
+#ƒобавим новую колонку - ѕохудение
+
+```
+data$weight.loss = data$initial.weight - data$final.weight
+```
+
+#ѕроанализиуем есть ли различи€ по типам диет
+
+```
+boxplot(weight.loss~diet.type,data=data,col="light gray",
+        ylab = "Weight loss (kg)", xlab = "Diet type")
+abline(h=0,col="green")
+```
+
+#проверим сбалансированные ли данные
+
+```
+table(data$diet.type)
+A  B  C 
+24 27 27
+```
+
+#√рафик групповых средних
+
+```
+library(gplots) #библиотека устанавлеваетс€ с помощью install.packages
+plotmeans(weight.loss ~ diet.type, data=data)
+aggregate(data$weight.loss, by = list(data$diet.type), FUN=sd)
+  Group.1        x
+1       A 2.240148
+2       B 2.523367
+3       C 2.395568
+```
+
+#ƒл€ подгонки ANOVA модели используем функцию aov, частный случай линейной модели lm
+#тест на межгрупповые различи€
+
+```
+fit <- aov(weight.loss ~ diet.type, data=data)
+summary(fit)
+           Df Sum Sq Mean Sq F value
+diet.type    2   71.1   35.55   6.197
+Residuals   75  430.2    5.74        
+             Pr(>F)   
+diet.type   0.00323 **
+Residuals             
+---
+Signif. codes:  
+  0 С***Т 0.001 С**Т 0.01 С*Т 0.05 С.Т
+  0.1 С Т 1
+```
+
+#попарные различи€ между средними значени€ми дл€ всех групп
+
+```
+TukeyHSD(fit)
+Tukey multiple comparisons of means
+    95% family-wise confidence level
+Fit: aov(formula = weight.loss ~ diet.type, data = data)
+$`diet.type`
+          diff        lwr      upr
+B-A -0.2740741 -1.8806155 1.332467
+C-A  1.8481481  0.2416067 3.454690
+C-B  2.1222222  0.5636481 3.680796
+        p adj
+B-A 0.9124737
+C-A 0.0201413
+C-B 0.0047819
+```
+
+#Tukey honest significant differences test)
+
+```
+library(multcomp)
+par(mar=c(5,4,6,2))
+tuk <- glht(fit, linfct=mcp(diet.type="Tukey"))
+plot(cld(tuk, level=.05),col="lightgrey")
+```
+
+#«адание
+#ƒобавить проверку на выборы и избавитьс€ от них
+
+```
+plot(data$weight.loss ~ data$diet.type)
+> data <- data[data$weight.loss>=0 & data$weight.loss <= 8, ]
+```
+
+#повторно проверсти все тесты и сравнить результаты с выбросами и без
+
+```
+> boxplot(weight.loss~diet.type,data=data,col="light gray",
++         ylab = "Weight loss (kg)", xlab = "Diet type")
+```
+
+### —балансированость выборки
+
+```
+table(data$diet.type)
+ A  B  C 
+21 24 25 
+```
+
+### √рафик групповых средних
+
+```
+plotmeans(weight.loss ~ diet.type, data=data)
+aggregate(data$weight.loss, by = list(data$diet.type), FUN=sd)
+  Group.1        x
+1       A 1.384678
+2       B 2.086495
+3       C 2.223196
+```
+
+### ƒл€ подгонки ANOVA модели используем функцию aov, частный случай линейной модели lm тест на межгрупповые различи€
+
+```
+fit <- aov(weight.loss ~ diet.type, data=data)
+summary(fit)
+            Df Sum Sq Mean Sq F value
+diet.type    2  43.16  21.578   5.623
+Residuals   67 257.10   3.837        
+             Pr(>F)   
+diet.type   0.00553 **
+Residuals             
+---
+Signif. codes:  
+  0 С***Т 0.001 С**Т 0.01 С*Т 0.05 С.Т
+  0.1 С Т 1
+```
+
+### ѕопарные различи€ между средними значени€ми дл€ всех групп
+
+```
+TukeyHSD(fit)
+  Tukey multiple comparisons of means
+    95% family-wise confidence level
+Fit: aov(formula = weight.loss ~ diet.type, data = data)
+$`diet.type`
+         diff         lwr      upr
+B-A 0.6041667 -0.79880872 2.007142
+C-A 1.8813333  0.49151406 3.271153
+C-B 1.2771667 -0.06461384 2.618947
+        p adj
+B-A 0.5593442
+C-A 0.0051569
+C-B 0.0653789
+```
+
+### Tukey honest significant differences test
+
+```
+par(mar=c(5,4,6,2))
+tuk <- glht(fit, linfct=mcp(diet.type="Tukey"))
+plot(cld(tuk, level=.05),col="lightgrey")
+```
+
+### ƒиета B стала лучше диаеты A.
+
+### «ависимость потери веса от пола
+
+### ”далим пустые клетки в столбце "пол"
+
+```
+> data$gender <- factor( c('Female', 'Male')[as.ordered(data$gender)] )
+> 
+> summary(data)
+    gender        age       
+ Female:40   Min.   :16.00  
+ Male  :28   1st Qu.:33.00  
+ NA's  : 2   Median :39.50  
+             Mean   :39.51  
+             3rd Qu.:48.00  
+             Max.   :60.00  
+     height      initial.weight  
+ Min.   :141.0   Min.   : 58.00  
+ 1st Qu.:163.2   1st Qu.: 65.25  
+ Median :169.5   Median : 72.00  
+ Mean   :170.7   Mean   : 72.24  
+ 3rd Qu.:174.0   3rd Qu.: 78.00  
+ Max.   :201.0   Max.   :103.00  
+ diet.type  final.weight   
+ A:21      Min.   : 53.00  
+ B:24      1st Qu.: 61.85  
+ C:25      Median : 68.60  
+           Mean   : 68.40  
+           3rd Qu.: 73.42  
+           Max.   :103.00  
+  weight.loss   
+ Min.   :0.000  
+ 1st Qu.:2.400  
+ Median :3.600  
+ Mean   :3.846  
+ 3rd Qu.:5.375  
+ Max.   :7.900  
+```
+
+### ѕроверка на сбалансированность выборки
+
+```
+table(data$gender)
+Female   Male 
+    40     28 
+```
+
+### ƒл€ подгонки ANOVA модели используем функцию aov, частный случай линейной модели lm тест на межгрупповые различи€
+
+```
+> fit <- aov(weight.loss ~ gender, data=data)
+> 
+> summary(fit)
+            Df Sum Sq Mean Sq F value
+gender       1    0.6   0.601   0.147
+Residuals   66  269.2   4.079        
+            Pr(>F)
+gender       0.702
+Residuals         
+2 observations deleted due to missingness
+```
+
+### ѕопарные различи€ между средними значени€ми дл€ всех групп
+
+```
+THSD <- TukeyHSD(fit)
+```
+
+### Tukey honest significant differences test
+
+```
+> THSD <- TukeyHSD(fit)
+> 
+> par(mar=c(5,4,6,2))
+> 
+> tuk <- glht(fit, linfct=mcp(gender="Tukey"))
+> 
+> plot(cld(tuk, level=.05),col="lightgrey")
+```
+
+ѕровед€ исследование, получаем, что худение мало зависит от пола. 
