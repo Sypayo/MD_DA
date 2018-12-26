@@ -1,0 +1,427 @@
+#Лабораторная работа 3
+
+##Козарев М.Ю. РИ-450005
+
+##Исходные данные
+
+Файл forbes.htm содержит список богатейших американцев по версии журнала Форбс. На его примере потренируемся в разборе html страниц.
+
+##Задание 1
+
+1. Используйте команду readLines для загрузки файла в текстовый вектор html.
+
+```
+forbesHtml <- readLines("https://raw.githubusercontent.com/SergeyMirvoda/MD-DA-2017/master/data/forbes.htm")
+```
+
+i. Сколько строк в файле?
+
+```
+length(forbesHtml)
+[1] 1991
+```
+
+ii. Сколько символов в файле?
+
+```
+sum(nchar(forbesHtml)) 
+[1] 80380
+```
+
+2. Откройте файл в текстовом редакторе. Найдите строки, содержащие данные о Билле Гейтсе(72) и Ларри Эллисоне(41) и запомните размер их дохода.
+
+3. Напишите шаблон регулярного выражения и используйте функцию grep, чтобы извлечь размер дохода из данных в векторе html. Удостоверьтесь, что полученный вектор номеров строк содержит содержит ровно 100 записей и ссылается на номера строк в котрых действительно есть информация о доходе, а не просто первый попавшийся текст.
+
+```
+> patternForProfit <- "[$]\\d{,2}[,]?\\d{,2}?\\s[B]"
+> forbesHtml_profit <- grep(patternForProfit, forbesHtml)
+> length(forbesHtml_profit) == 100
+[1] TRUE
+> 
+> forbesHtml[forbesHtml_profit]
+  [1] "\t\t<td class=\"worth\">$72 B</td>"  
+  [2] "\t\t<td class=\"worth\">$58,5 B</td>"
+  [3] "\t\t<td class=\"worth\">$41 B</td>"  
+  [4] "\t\t<td class=\"worth\">$36 B</td>"  
+  [5] "\t\t<td class=\"worth\">$36 B</td>"  
+  [6] "\t\t<td class=\"worth\">$35,4 B</td>"
+  [7] "\t\t<td class=\"worth\">$33,8 B</td>"
+  [8] "\t\t<td class=\"worth\">$33,5 B</td>"
+  [9] "\t\t<td class=\"worth\">$33,3 B</td>"
+ [10] "\t\t<td class=\"worth\">$31 B</td>"  
+ [11] "\t\t<td class=\"worth\">$28,5 B</td>"
+ [12] "\t\t<td class=\"worth\">$27,2 B</td>"
+ [13] "\t\t<td class=\"worth\">$24,9 B</td>"
+ [14] "\t\t<td class=\"worth\">$24,4 B</td>"
+ [15] "\t\t<td class=\"worth\">$20,5 B</td>"
+ [16] "\t\t<td class=\"worth\">$20,5 B</td>"
+ [17] "\t\t<td class=\"worth\">$20,5 B</td>"
+ [18] "\t\t<td class=\"worth\">$20,3 B</td>"
+ [19] "\t\t<td class=\"worth\">$20 B</td>"  
+ [20] "\t\t<td class=\"worth\">$19 B</td>"  
+ [21] "\t\t<td class=\"worth\">$18 B</td>"  
+ [22] "\t\t<td class=\"worth\">$17,8 B</td>"
+ [23] "\t\t<td class=\"worth\">$17,2 B</td>"
+ [24] "\t\t<td class=\"worth\">$16,3 B</td>"
+ [25] "\t\t<td class=\"worth\">$15,9 B</td>"
+ [26] "\t\t<td class=\"worth\">$15,8 B</td>"
+ [27] "\t\t<td class=\"worth\">$14 B</td>"  
+ [28] "\t\t<td class=\"worth\">$14 B</td>"  
+ [29] "\t\t<td class=\"worth\">$13,5 B</td>"
+ [30] "\t\t<td class=\"worth\">$13,4 B</td>"
+ [31] "\t\t<td class=\"worth\">$12,9 B</td>"
+ [32] "\t\t<td class=\"worth\">$12,5 B</td>"
+ [33] "\t\t<td class=\"worth\">$12,4 B</td>"
+ [34] "\t\t<td class=\"worth\">$12 B</td>"  
+ [35] "\t\t<td class=\"worth\">$11,7 B</td>"
+ [36] "\t\t<td class=\"worth\">$11,4 B</td>"
+ [37] "\t\t<td class=\"worth\">$11,4 B</td>"
+ [38] "\t\t<td class=\"worth\">$10,3 B</td>"
+ [39] "\t\t<td class=\"worth\">$10,2 B</td>"
+ [40] "\t\t<td class=\"worth\">$10 B</td>"  
+ [41] "\t\t<td class=\"worth\">$10 B</td>"  
+ [42] "\t\t<td class=\"worth\">$9,8 B</td>" 
+ [43] "\t\t<td class=\"worth\">$9,4 B</td>" 
+ [44] "\t\t<td class=\"worth\">$9,3 B</td>" 
+ [45] "\t\t<td class=\"worth\">$9 B</td>"   
+ [46] "\t\t<td class=\"worth\">$8,9 B</td>" 
+ [47] "\t\t<td class=\"worth\">$8,5 B</td>" 
+ [48] "\t\t<td class=\"worth\">$8,5 B</td>" 
+ [49] "\t\t<td class=\"worth\">$8,3 B</td>" 
+ [50] "\t\t<td class=\"worth\">$8,3 B</td>" 
+ [51] "\t\t<td class=\"worth\">$8,3 B</td>" 
+ [52] "\t\t<td class=\"worth\">$8,2 B</td>" 
+ [53] "\t\t<td class=\"worth\">$7,9 B</td>" 
+ [54] "\t\t<td class=\"worth\">$7,7 B</td>" 
+ [55] "\t\t<td class=\"worth\">$7,7 B</td>" 
+ [56] "\t\t<td class=\"worth\">$7,6 B</td>" 
+ [57] "\t\t<td class=\"worth\">$7,5 B</td>" 
+ [58] "\t\t<td class=\"worth\">$7,2 B</td>" 
+ [59] "\t\t<td class=\"worth\">$6,9 B</td>" 
+ [60] "\t\t<td class=\"worth\">$6,8 B</td>" 
+ [61] "\t\t<td class=\"worth\">$6,7 B</td>" 
+ [62] "\t\t<td class=\"worth\">$6,7 B</td>" 
+ [63] "\t\t<td class=\"worth\">$6,7 B</td>" 
+ [64] "\t\t<td class=\"worth\">$6,7 B</td>" 
+ [65] "\t\t<td class=\"worth\">$6,4 B</td>" 
+ [66] "\t\t<td class=\"worth\">$6,4 B</td>" 
+ [67] "\t\t<td class=\"worth\">$6,4 B</td>" 
+ [68] "\t\t<td class=\"worth\">$6 B</td>"   
+ [69] "\t\t<td class=\"worth\">$6 B</td>"   
+ [70] "\t\t<td class=\"worth\">$5,9 B</td>" 
+ [71] "\t\t<td class=\"worth\">$5,8 B</td>" 
+ [72] "\t\t<td class=\"worth\">$5,8 B</td>" 
+ [73] "\t\t<td class=\"worth\">$5,7 B</td>" 
+ [74] "\t\t<td class=\"worth\">$5,6 B</td>" 
+ [75] "\t\t<td class=\"worth\">$5,6 B</td>" 
+ [76] "\t\t<td class=\"worth\">$5,6 B</td>" 
+ [77] "\t\t<td class=\"worth\">$5,5 B</td>" 
+ [78] "\t\t<td class=\"worth\">$5,5 B</td>" 
+ [79] "\t\t<td class=\"worth\">$5,5 B</td>" 
+ [80] "\t\t<td class=\"worth\">$5,5 B</td>" 
+ [81] "\t\t<td class=\"worth\">$5,5 B</td>" 
+ [82] "\t\t<td class=\"worth\">$5,5 B</td>" 
+ [83] "\t\t<td class=\"worth\">$5,5 B</td>" 
+ [84] "\t\t<td class=\"worth\">$5,3 B</td>" 
+ [85] "\t\t<td class=\"worth\">$5,2 B</td>" 
+ [86] "\t\t<td class=\"worth\">$5,2 B</td>" 
+ [87] "\t\t<td class=\"worth\">$5,2 B</td>" 
+ [88] "\t\t<td class=\"worth\">$5,1 B</td>" 
+ [89] "\t\t<td class=\"worth\">$5,1 B</td>" 
+ [90] "\t\t<td class=\"worth\">$5 B</td>"   
+ [91] "\t\t<td class=\"worth\">$5 B</td>"   
+ [92] "\t\t<td class=\"worth\">$5 B</td>"   
+ [93] "\t\t<td class=\"worth\">$4,9 B</td>" 
+ [94] "\t\t<td class=\"worth\">$4,8 B</td>" 
+ [95] "\t\t<td class=\"worth\">$4,7 B</td>" 
+ [96] "\t\t<td class=\"worth\">$4,7 B</td>" 
+ [97] "\t\t<td class=\"worth\">$4,7 B</td>" 
+ [98] "\t\t<td class=\"worth\">$4,6 B</td>" 
+ [99] "\t\t<td class=\"worth\">$4,6 B</td>" 
+[100] "\t\t<td class=\"worth\">$4,6 B</td>" 
+```
+
+4. Напишите код, использовав регулярное выражение из п. 3, и функции regexp и regmatches, чтобы извлечь все данные о доходе. 
+
+```
+> forbesHtmlProfitVector <- regmatches(forbesHtml, regexpr(patternForProfit, forbesHtml)) 
+```
+
+Проверьте следующее:
+
+i.Должно быть ровно сто значений.
+
+```
+> length(forbesHtmlProfitVector)
+[1] 100
+```
+
+ii. Самый большой доход должен быть доход Билла Гейтса
+
+```
+ forbesHtmlProfitVector[1]
+[1] "$72 B"
+```
+
+iii. Такой доход должен быть в списке один раз.
+
+```
+> forbesHtmlProfitVector[forbesHtmlProfitVector=="$72 B"]
+[1] "$72 B"
+```
+
+iv. В всписке должна быть цифра, которую мы запомнили для Ларри Эллисона.
+
+```
+> forbesHtmlProfitVector[forbesHtmlProfitVector=="$41 B"]
+[1] "$41 B"
+```
+
+v. Должно быть как минимум два значения, встречающихся несколько раз.
+
+```
+for(i in 1:100)
++ {
++     for(j in 1: 100)
++     {
++         if(i != j && forbesHtmlProfitVector[i] == forbesHtmlProfitVector[j])
++         {
++             print(forbesHtmlProfitVector[i])
++         }
++     }
++ }
+[1] "$36 B"
+[1] "$36 B"
+[1] "$20,5 B"
+[1] "$20,5 B"
+[1] "$20,5 B"
+[1] "$20,5 B"
+[1] "$20,5 B"
+[1] "$20,5 B"
+[1] "$14 B"
+[1] "$14 B"
+[1] "$11,4 B"
+[1] "$11,4 B"
+[1] "$10 B"
+[1] "$10 B"
+[1] "$8,5 B"
+[1] "$8,5 B"
+[1] "$8,3 B"
+[1] "$8,3 B"
+[1] "$8,3 B"
+[1] "$8,3 B"
+[1] "$8,3 B"
+[1] "$8,3 B"
+[1] "$7,7 B"
+[1] "$7,7 B"
+[1] "$6,7 B"
+[1] "$6,7 B"
+[1] "$6,7 B"
+[1] "$6,7 B"
+[1] "$6,7 B"
+[1] "$6,7 B"
+[1] "$6,7 B"
+[1] "$6,7 B"
+[1] "$6,7 B"
+[1] "$6,7 B"
+[1] "$6,7 B"
+[1] "$6,7 B"
+[1] "$6,4 B"
+[1] "$6,4 B"
+[1] "$6,4 B"
+[1] "$6,4 B"
+[1] "$6,4 B"
+[1] "$6,4 B"
+[1] "$6 B"
+[1] "$6 B"
+[1] "$5,8 B"
+[1] "$5,8 B"
+[1] "$5,6 B"
+[1] "$5,6 B"
+[1] "$5,6 B"
+[1] "$5,6 B"
+[1] "$5,6 B"
+[1] "$5,6 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,5 B"
+[1] "$5,2 B"
+[1] "$5,2 B"
+[1] "$5,2 B"
+[1] "$5,2 B"
+[1] "$5,2 B"
+[1] "$5,2 B"
+[1] "$5,1 B"
+[1] "$5,1 B"
+[1] "$5 B"
+[1] "$5 B"
+[1] "$5 B"
+[1] "$5 B"
+[1] "$5 B"
+[1] "$5 B"
+[1] "$4,7 B"
+[1] "$4,7 B"
+[1] "$4,7 B"
+[1] "$4,7 B"
+[1] "$4,7 B"
+[1] "$4,7 B"
+[1] "$4,6 B"
+[1] "$4,6 B"
+[1] "$4,6 B"
+[1] "$4,6 B"
+[1] "$4,6 B"
+[1] "$4,6 B"
+```
+
+##Задание 2
+
+5.В данных доход представлен в формате "$42 B", что означает 42 ?? 10^9. Преобразуйте этот формат в числовой и сохраните в вектор worths.
+
+```
+> forbesHtmlProfitVectorAsNumeric <- sub(",",".",forbesHtmlProfitVectorAsNumeric)
+> forbesHtmlProfitVectorAsNumeric <- substr(forbesHtmlProfitVector, 2, nchar(forbesHtmlProfitVector)-2)
+> worths <- as.numeric(forbesHtmlProfitVectorAsNumeric) * 10^9
+> worths
+  [1] 7.20e+10 5.85e+10 4.10e+10 3.60e+10 3.60e+10 3.54e+10 3.38e+10
+  [8] 3.35e+10 3.33e+10 3.10e+10 2.85e+10 2.72e+10 2.49e+10 2.44e+10
+ [15] 2.05e+10 2.05e+10 2.05e+10 2.03e+10 2.00e+10 1.90e+10 1.80e+10
+ [22] 1.78e+10 1.72e+10 1.63e+10 1.59e+10 1.58e+10 1.40e+10 1.40e+10
+ [29] 1.35e+10 1.34e+10 1.29e+10 1.25e+10 1.24e+10 1.20e+10 1.17e+10
+ [36] 1.14e+10 1.14e+10 1.03e+10 1.02e+10 1.00e+10 1.00e+10 9.80e+09
+ [43] 9.40e+09 9.30e+09 9.00e+09 8.90e+09 8.50e+09 8.50e+09 8.30e+09
+ [50] 8.30e+09 8.30e+09 8.20e+09 7.90e+09 7.70e+09 7.70e+09 7.60e+09
+ [57] 7.50e+09 7.20e+09 6.90e+09 6.80e+09 6.70e+09 6.70e+09 6.70e+09
+ [64] 6.70e+09 6.40e+09 6.40e+09 6.40e+09 6.00e+09 6.00e+09 5.90e+09
+ [71] 5.80e+09 5.80e+09 5.70e+09 5.60e+09 5.60e+09 5.60e+09 5.50e+09
+ [78] 5.50e+09 5.50e+09 5.50e+09 5.50e+09 5.50e+09 5.50e+09 5.30e+09
+ [85] 5.20e+09 5.20e+09 5.20e+09 5.10e+09 5.10e+09 5.00e+09 5.00e+09
+ [92] 5.00e+09 4.90e+09 4.80e+09 4.70e+09 4.70e+09 4.70e+09 4.60e+09
+ [99] 4.60e+09 4.60e+09
+```
+
+Удостоверьтесь в следующем:
+i. worths является вектором и в нём сто занчений типа double.
+
+```
+> is.double(worths)
+[1] TRUE
+> is.vector(worths)
+[1] TRUE
+> length(worths) == 100
+[1] TRUE
+```
+
+ii. Все элементы вектора worths больше 1 миллиарда.
+
+```
+length(worths[worths>10^9])
+[1] 100
+```
+
+iii. Самое большое число это доход Билла Гейтса.
+
+```
+> max(worths)
+[1] 7.2e+10
+```
+
+6. Используйте вектор worths , чтобы выяснить следующее:
+
+i.Какова медиана ста этих записей?
+
+```
+median(worths)
+[1] 8.3e+09
+```
+
+ii.Средний доход?
+
+```
+mean(worths)
+[1] 1.293e+10
+```
+
+iii.Как много людей из этого списка имеют доход больше 5млрд., 10, 25?
+
+```
+> length(worths[worths>5*10^9])
+[1] 89
+> length(worths[worths>10*10^9])
+[1] 39
+> length(worths[worths>25*10^9])
+[1] 12
+```
+
+iV: Какой их общий доход?
+
+```
+ sum(worths) 
+[1] 1.293e+12
+```
+
+v. Какую долю от общего дохода, составляет пятёрка самых богатых.
+
+```
+> sumOfFiveRichest <- sum(worths[1:5])
+> percentOfTheFive <- sumOfFiveRichest / sum(worths)
+> percentOfTheFive
+[1] 0.1883217
+```
+
+vi. Какую долю от общего дохода, составляют 20 самых богатых.
+
+```
+> sumOfTwentyRichest <- sum(worths[1:20])
+> percentOfTwenty <- sumOfTwentyRichest / sum(worths)
+> percentOfTwenty
+[1] 0.4921114
+```
+
+vii.В данных федерального резерва США найдите показатель дохода всех домохозяйств (Household net worth) в соответвующем году, какую долю общего дохода составляют 100 богатейших людей. 
+U.S. household wealth reached $100.8 trillion in the January-March period of 2018.
+
+```
+> householdNetWorth <- 100.8*10^12
+> percentOFTheRichest <- sum(worths) / householdNetWorth
+> percentOFTheRichest
+[1] 0.01282738
+```
